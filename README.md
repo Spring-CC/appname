@@ -1,5 +1,5 @@
 # Spring APP
-![logo](src/img/tabe1.png)
+![logo](src/img/tabe.png)
 
 This was created during our time as students at Code Chrysalis.
 
