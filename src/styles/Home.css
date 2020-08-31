@@ -6,3 +6,22 @@
 .picture-container {
   margin-top: 5vh;
 }
+
+.choice-container {
+  display: flex;
+  justify-content: center;
+}
+
+.choice-no {
+  margin-right: 70vw;
+  margin-top: 5vh;
+  border: 2px solid black;
+  padding: 2vh 2vw;
+}
+
+.choice-yes {
+  margin-top: 5vh;
+  border: 2px solid black;
+  padding: 2vh 2vw;
+
+}

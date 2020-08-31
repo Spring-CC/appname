@@ -9,13 +9,19 @@ import image4 from '../img/4.jpg'
 
 export default function Home() {
     return (
-        <div className="picture-container">
-            <AliceCarousel autoPlay autoPlayInterval="3000">
-                <img src={image1} className="sliderimg" alt="not loaded" />
-                <img src={image2} className="sliderimg" alt="not loaded" />
-                <img src={image3} className="sliderimg" alt="not loaded" />
-                <img src={image4} className="sliderimg" alt="not loaded" />
-            </AliceCarousel>
-        </div>
+        <>
+            <div className="choice-container">
+                <div className="choice-no">No</div>
+                <div className="choice-yes">Yes</div>
+            </div>
+            <div className="picture-container">
+                <AliceCarousel autoPlay autoPlayInterval="3000">
+                    <img src={image1} className="sliderimg" alt="not loaded" />
+                    <img src={image2} className="sliderimg" alt="not loaded" />
+                    <img src={image3} className="sliderimg" alt="not loaded" />
+                    <img src={image4} className="sliderimg" alt="not loaded" />
+                </AliceCarousel>
+            </div>
+        </>
     );
 }

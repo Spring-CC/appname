@@ -5,7 +5,7 @@ export default function Nav() {
         <nav >
             <h1>Restaurant App</h1>
             <ul className="nav-links">
-                <li>home</li>
+                <li>Home</li>
                 <li>About</li>
                 <li>Sign In</li>
             </ul>
