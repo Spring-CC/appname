@@ -19,7 +19,7 @@ export default function Home() {
                 <Link className="choice-yes" to="/details" style={linkStyle}>Yes</Link>
             </div>
             <div className="picture-container">
-                <AliceCarousel autoPlay autoPlayInterval="3000" buttonsDisabled={true}>
+                <AliceCarousel autoPlay autoPlayInterval={3000} buttonsDisabled={true}>
                     <img src={image1} className="sliderimg" alt="not loaded" />
                     <img src={image2} className="sliderimg" alt="not loaded" />
                     <img src={image3} className="sliderimg" alt="not loaded" />
