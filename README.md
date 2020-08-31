@@ -22,10 +22,6 @@ Users can also see the most liked and disliked jokes of all time!
 [JOKER](https://cc13-rakutenapi-staging.herokuapp.com/)
 
 
-## Environment
-
-- Node.js
-
 ## Project setup
 
 ### Install dependencies
