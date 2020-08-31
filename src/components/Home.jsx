@@ -11,8 +11,8 @@ export default function Home() {
     return (
         <>
             <div className="choice-container">
-                <div className="choice-no">No</div>
-                <div className="choice-yes">Yes</div>
+                <button className="choice-no">No</button>
+                <button className="choice-yes">Yes</button>
             </div>
             <div className="picture-container">
                 <AliceCarousel autoPlay autoPlayInterval="3000">

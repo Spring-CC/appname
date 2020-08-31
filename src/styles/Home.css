@@ -15,13 +15,36 @@
 .choice-no {
   margin-right: 70vw;
   margin-top: 5vh;
-  border: 2px solid black;
-  padding: 2vh 2vw;
+  padding: 2vh 5vw;
+  background-color: #44bbff;
+  color: white;
+  font-size: 3vh;
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  transition-duration: 0.4s;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.choice-no:hover {
+  background-color: #fd2d2d;
+  color: white;
 }
 
 .choice-yes {
   margin-top: 5vh;
-  border: 2px solid black;
-  padding: 2vh 2vw;
+  padding: 2vh 5vw;
+  background-color: #44bbff;
+  color: white;
+  font-size: 3vh;
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  transition-duration: 0.4s;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
 
+.choice-yes:hover {
+  background-color: #4CAF50;
+  color: white;
 }
