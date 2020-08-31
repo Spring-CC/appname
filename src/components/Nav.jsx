@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function Nav() {
     return (
-        <nav>
+        <nav >
             <h1>Restaurant App</h1>
-            <ul>
+            <ul className="nav-links">
                 <li>home</li>
                 <li>About</li>
                 <li>Sign In</li>
