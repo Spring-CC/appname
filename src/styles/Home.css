@@ -1,6 +1,6 @@
 .sliderimg{
   width: 50%;
-  height: 70vh;
+  /* height: 50vh; */
 }
 
 .picture-container {
@@ -13,7 +13,7 @@
 }
 
 .choice-no {
-  margin-right: 70vw;
+  margin-right: 30vw;
   margin-top: 5vh;
   padding: 2vh 5vw;
   background-color: #44bbff;
@@ -27,7 +27,7 @@
 }
 
 .choice-no:hover {
-  background-color: #fd2d2d;
+  background-color: #d42020;
   color: white;
 }
 
