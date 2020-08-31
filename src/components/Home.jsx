@@ -26,6 +26,12 @@ export default function Home() {
                     <img src={image4} className="sliderimg" alt="not loaded" />
                 </AliceCarousel>
             </div>
+            <div className="restaurant-info">
+                <div>Restaurant Name!</div>
+                <div>Type of Restaurant!</div>
+                <div>Location!</div>
+                <div>Operating Hours!</div>
+            </div>
         </>
     );
 }

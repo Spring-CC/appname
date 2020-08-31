@@ -16,7 +16,7 @@
   margin-right: 30vw;
   margin-top: 5vh;
   padding: 2vh 5vw;
-  background-color: #44bbff;
+  background-color: #ff9f46;
   color: white;
   font-size: 3vh;
   border: none;
@@ -34,7 +34,7 @@
 .choice-yes {
   margin-top: 5vh;
   padding: 2vh 5vw;
-  background-color: #44bbff;
+  background-color: #ff9f46;
   color: white;
   font-size: 3vh;
   border: none;
@@ -47,4 +47,12 @@
 .choice-yes:hover {
   background-color: #4CAF50;
   color: white;
+}
+
+.restaurant-info {
+  margin-top: 5vh;
+  padding: 2vh 5vw;
+  background-color: rgb(16, 139, 255);
+  color: white;
+  font-size: 3vh;
 }
