@@ -1,5 +1,5 @@
 # Spring APP
-![logo](https://user-images.githubusercontent.com/59043522/90584602-e61e8c00-e1a0-11ea-9abc-325a924433bf.png)
+![logo](src/img/tabe1.png)
 
 This was created during our time as students at Code Chrysalis.
 
@@ -15,7 +15,7 @@ This was created during our time as students at Code Chrysalis.
 This app allows users to like or dislike jokes made specifically for them!
 Users can also see the most liked and disliked jokes of all time!
 
-<img width="957" alt="shaun" src="https://user-images.githubusercontent.com/59043522/90850254-26b40c00-e33f-11ea-8177-d764f4bfb75e.png">
+<img width="957" alt="shaun" src="src/img/app.png">
 
 
 ## Link
