@@ -52,7 +52,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - [vueJS](http://www.https://vuejs.org/) - The Javascript library used
 - [Yarn](https://yarnpkg.com/) - Package Management
 - [Knex](https://knexjs.org/) - Query building
-- [Postgres](https://www.postgresql.org/) - Database Management
+- [MongoDB](https://www.mongodb.com/) - Database Management
 - [express](https://expressjs.com/) - Routing
 
 ## Contributing
