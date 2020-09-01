@@ -17,8 +17,12 @@ const server = Hapi.Server({
 server.route({
   method: "GET",
   path: "/",
-    handler: function (request, h) {
-    return "hello"
+  handler: async (request, h) => {
+    try {
+      return h.response("Hello from HapiJS!");
+    } catch (error) {
+      return h.response(error).code(500);
+    }
   },
 });
 
