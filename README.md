@@ -49,11 +49,14 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Built With
 
-- [vueJS](http://www.https://vuejs.org/) - The Javascript library used
+- [React](http://www.https://vuejs.org/) - Framework
 - [Yarn](https://yarnpkg.com/) - Package Management
-- [Knex](https://knexjs.org/) - Query building
+- [Hapi/Joi](https://www.npmjs.com/package/@hapi/joi) - 
 - [MongoDB](https://www.mongodb.com/) - Database Management
 - [express](https://expressjs.com/) - Routing
+- [Python](https://www.python.org/) - Machine Learning
+- [Auth0](https://auth0.com/) - Login
+- [Redux](https://redux.js.org/) - State management
 
 ## Contributing
 

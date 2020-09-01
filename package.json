@@ -14,8 +14,6 @@
     "joi": "^17.2.1",
     "mongoose": "^5.10.2",
     "nodemon": "^2.0.4",
-    "passport": "^0.4.1",
-    "passport-auth0": "^1.3.3",
     "react": "^16.13.1",
     "react-alice-carousel": "^1.19.3",
     "react-dom": "^16.13.1",
@@ -23,6 +21,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "react-swipeable": "^5.5.1",
     "redux": "^4.0.5"
   },
   "scripts": {
@@ -30,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "node server/index.js"
+    "serve": "nodemon sever/index.js"
   },
   "eslintConfig": {
     "extends": "react-app"
