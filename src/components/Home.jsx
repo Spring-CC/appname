@@ -9,17 +9,22 @@ import { increment } from "../actions";
 import data from '../data/restaurants.json';
 
 export default function Home() {
+
     const history = useHistory();
+
     const index = useSelector(state => state);
     const dispatch = useDispatch();
+
     const linkStyle = {
         fontFamily: "verdana"
     }
+
     const restaurants = data.filter((restaurant, idx) => idx === index);
     const images = [];
     for (let key in restaurants[0].image_url) {
         images.push(restaurants[0].image_url[key])
     }
+
     return (
         <>
             <div className="choice-container">
