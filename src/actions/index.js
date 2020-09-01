@@ -1,5 +1,5 @@
-export const action = () => {
+export const increment = () => {
     return {
-        type: "",
+        type: "INCREMENT",
     }
 }
