@@ -32,13 +32,32 @@ app.get("/", (req, res) => {
   res.json({ message: "HIIIIIII SPRING" });
 });
 
-//mongoDB test route
+//mongoDB routes**********************************************************************
+
+//get all restaurants
 app.get("/restAtlas", async (req, res) => {
 	const dbCollection = await DbConnection.getCollection("Restaurants");
 	const restaurants = await dbCollection.find().toArray();
 	res.json(restaurants);
 });
 
+//Get restaurants by ID
+app.get("/restAtlas/:id", async (req,res)=> {
+  const restId = req.params.id;
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurant = await dbCollection.findOne({id: restId});
+  res.json(restaurant);
+})
+
+//Get restaurants by category
+app.get("/restAtlas/:category/categories", async (req,res)=> {
+  const restCat = req.params.category;
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurant = await dbCollection.findOne({category: restCat});
+  res.json(restaurant);
+})
+
+//***************************************************************************************** */
 // db.mongoose
 //   .connect(db.url, {
 //     useNewUrlParser: true,
