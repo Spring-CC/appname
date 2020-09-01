@@ -1,13 +1,12 @@
-// const Mongoose = require("mongoose");
 // const dotenv = require("dotenv");
 // dotenv.config();
+// const mongoose = require("mongoose");
 
-// Mongoose.connect(process.env.DB_CONNECT);
-// const db = Mongoose.connection;
+// mongoose.Promise = global.Promise;
 
-// db.on("error", console.error.bind(console, "connection error"));
-// db.once("open", function callback() {
-//   console.log("Connection with database succeeded.");
-// });
+// const db = {};
+// db.mongoose = mongoose;
+// db.url = process.env.DB_URL;
+// // db.resutaurants = require("./model.js")(mongoose);
 
-// exports.db = db;
+// module.exports = db;
