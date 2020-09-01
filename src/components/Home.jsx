@@ -14,7 +14,6 @@ export default function Home() {
     for (let key in restaurants[0].image_url) {
         images.push(restaurants[0].image_url[key])
     }
-    console.log(images)
     return (
         <>
             <div className="choice-container">
