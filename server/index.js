@@ -3,6 +3,13 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
+const session = require("express-session");
+const passport = require("passport");
+const Auth0Strategy = require("passport-auth0");
+const router = require("./auth0");
+const dotenv = require("dotenv");
+
+dotenv.config();
 // const db = require("./server/db");
 
 const app = express();
@@ -14,7 +21,7 @@ app.use(
 );
 
 const corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "http://localhost:8080",
 };
 
 app.use(cors(corsOptions));
@@ -22,7 +29,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.resolve(__dirname, "..", "dist")));
+app.use(express.static(path.resolve(__dirname, "..", "build")));
 
 // simple route
 app.get("/", (req, res) => {
@@ -42,8 +49,51 @@ app.get("/", (req, res) => {
 //     process.exit();
 //   });
 
+// config express-session
+const sess = {
+  secret: "this is some secret",
+  cookie: {},
+  resave: false,
+  saveUninitialized: true,
+};
+
+if (app.get("env") === "production") {
+  // Use secure cookies in production (requires SSL/TLS)
+  sess.cookie.secure = true;
+
+  // Uncomment the line below if your application is behind a proxy (like on Heroku)
+  // or if you're encountering the error message:
+  // "Unable to verify authorization request state"
+  // app.set('trust proxy', 1);
+}
+
+app.use(session(sess));
+
+// Configure Passport to use Auth0
+var strategy = new Auth0Strategy(
+  {
+    domain: process.env.AUTH0_DOMAIN,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+    callbackURL:
+      process.env.AUTH0_CALLBACK_URL || "http://localhost:8080/callback",
+  },
+  function (accessToken, refreshToken, extraParams, profile, done) {
+    // accessToken is the token to call Auth0 API (not needed in the most cases)
+    // extraParams.id_token has the JSON Web Token
+    // profile has all the information from the user
+    return done(null, profile);
+  }
+);
+
+passport.use(strategy);
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(router);
+
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
+  res.sendFile(path.resolve(__dirname, "..", "build", "index.html"));
 });
 const PORT = process.env.PORT || 8080;
 
