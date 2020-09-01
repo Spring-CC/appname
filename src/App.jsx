@@ -6,7 +6,9 @@ import About from './components/About';
 import Details from './components/Details';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+
 export default function App() {
+
   return (
     <Router>
       <div className="App">
