@@ -7,11 +7,20 @@ import image1 from '../img/1.jpg'
 import image2 from '../img/2.jpeg'
 import image3 from '../img/3.jpg'
 import image4 from '../img/4.jpg'
+import data from '../data/restaurants.json';
+import { Swipeable } from 'react-swipeable';
+import { useHistory } from "react-router-dom";
 
 export default function Home() {
     const linkStyle = {
         fontFamily: "verdana"
     }
+    const restaurants = data.filter(restaurant => restaurant.id === "g398515");
+    const images = [];
+    for (let key in restaurants[0].image_url) {
+        images.push(restaurants[0].image_url[key])
+    }
+    const history = useHistory();
     return (
         <>
             <div className="choice-container">
@@ -32,6 +41,26 @@ export default function Home() {
                 <div>Location!</div>
                 <div>Operating Hours!</div>
             </div>
+            <AliceCarousel className="picture-container" autoPlay autoPlayInterval={3000} buttonsDisabled={true}>
+                {images.map((image_url, index) => {
+                    return (
+                        <img src={image_url} className="sliderimg" alt="not loaded" key={index} />
+                    );
+                })}
+            </AliceCarousel>
+            <Swipeable onSwipedRight={(e) => history.push('/details')} onSwipedLeft={(e) => history.push('/')}>
+                {restaurants.map(restaurant => {
+                    return (
+                        <div className="restaurant-info" key={restaurant.id}>
+                            <div>{restaurant.name}</div>
+                            <div>{restaurant.name_kana}</div>
+                            <div>{restaurant.category}</div>
+                            <div>{restaurant.address}</div>
+                            <div>{restaurant.opentime}</div>
+                        </div>
+                    );
+                })}
+            </Swipeable>
         </>
     );
 }

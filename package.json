@@ -23,6 +23,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "react-swipeable": "^5.5.1",
     "redux": "^4.0.5"
   },
   "scripts": {
@@ -30,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "node server/index.js"
+    "serve": "nodemon sever/index.js"
   },
   "eslintConfig": {
     "extends": "react-app"
