@@ -22,7 +22,9 @@ export default function Home() {
     const restaurants = data.filter((restaurant, idx) => idx === index);
     const images = [];
     for (let key in restaurants[0].image_url) {
-        images.push(restaurants[0].image_url[key])
+        if (restaurants[0].image_url[key] !== "") {
+            images.push(restaurants[0].image_url[key]);
+        }
     }
 
     return (
@@ -33,9 +35,7 @@ export default function Home() {
             </div>
             <AliceCarousel className="picture-container" autoPlay autoPlayInterval={3000} buttonsDisabled={true}>
                 {images.map((image_url, index) => {
-                    return (
-                        <img src={image_url} className="sliderimg" alt="not loaded" key={index} />
-                    );
+                    return <img src={image_url} className="sliderimg" alt="not loaded" key={index} />
                 })}
             </AliceCarousel>
             <Swipeable onSwipedRight={() => history.push('/details')} onSwipedLeft={() => history.push('/')}>
