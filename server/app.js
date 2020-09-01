@@ -16,10 +16,41 @@ db.initialize(dbName, collectionName, function(dbCollection) { // successCallbac
   // get all items
   dbCollection.find().toArray(function(err, result) {
       if (err) throw err;
-        console.log(result);
+        console.log("SUCCESS");
   });
 
   // << db CRUD routes >>
+
+  // find all
+  server.route({
+    method: "GET",
+    path: "/restaurantAtlas",
+    handler: (request, h) => {
+        dbCollection.find().toArray((error, result)=> {
+          if (error) throw error;
+          response.json(result);
+        });
+      }
+ });
+
+ // update one
+ server.route({
+  method: "PUT", 
+  path: "/restaurantAtlas/:id",
+  handler: (req, h) => {
+    const restId = req.params.id;
+    const item = req.body;
+    dbCollection.updateOne({id: restId}, {$set: item}, (error, result) => {
+      if(error) throw error;
+      //send back entire update list
+      dbCollection.find().toArray(function(_error, _result){
+        if(error) throw _error;
+        response.json(_result);
+      })
+    })
+  }
+})
+
 
 }, function(err) { // failureCallback
   throw (err);
@@ -38,19 +69,7 @@ const server = Hapi.Server({
   },
 });
 
-server.route({
-  method: "GET",
-  path: "/res",
-  handler: async (request, h) => {
-    try {
-      const result = await Restaurants.find({});
-      console.log(result);
-      return h.response(result);
-    } catch (error) {
-      return h.response("error");
-    }
-  },
-});
+
 
 server.route({
   method: "GET",
