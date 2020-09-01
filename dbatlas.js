@@ -3,14 +3,14 @@ require("dotenv").config();
 // mongodb driver
 const MongoClient = require("mongodb").MongoClient;
 
-if (!config.mongo_db_connection_string) {
-	throw Error("⚠ ⚠ ⚠ Put connection string from MongoDB Atlas in .env file ⚠ ⚠ ⚠")
-}
+// if (!config.mongo_db_connection_string) {
+// 	throw Error("⚠ ⚠ ⚠ Put connection string from MongoDB Atlas in .env file ⚠ ⚠ ⚠")
+// }
 
 class DbConnection {
 	constructor() {
 		this.db = null;
-		this.dbName = "RestaurantFinder";
+		this.dbName = process.env.DB;
 		this.url = `mongodb+srv://${process.env.DBUSER}:${process.env.PASSWORD}@cc13.temn3.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`
 		this.options = {
 			useNewUrlParser: true,
