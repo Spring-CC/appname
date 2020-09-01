@@ -8,13 +8,14 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.20.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "hapi": "^18.1.0",
     "joi": "^17.2.1",
+    "mongodb": "^3.6.0",
     "mongoose": "^5.10.2",
     "nodemon": "^2.0.4",
-    "axios": "^0.20.0",
     "react": "^16.13.1",
     "react-alice-carousel": "^1.19.3",
     "react-dom": "^16.13.1",
@@ -29,7 +30,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "nodemon app.js"
+    "serve": "nodemon server/index.js"
   },
   "eslintConfig": {
     "extends": "react-app"

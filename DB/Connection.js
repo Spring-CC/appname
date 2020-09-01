@@ -5,6 +5,7 @@ const URI = `mongodb+srv://${process.env.DBUSER}:${process.env.PASSWORD}@cc13.te
 
 const connectDB = async () => {
   await mongoose.connect(URI, {useUnifiedTopology: true, useNewUrlParser: true})
+  console.log("db has been connected...!");
 }
 
 module.exports = connectDB;

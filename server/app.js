@@ -1,8 +1,32 @@
+require("dotenv").config();
 const Hapi = require("@hapi/hapi");
-// const Mongoose = require("mongoose");
+const mongoose = require("mongoose");
 // const Joi = require("joi");
-// const db = require("./db");
+
 const path = require("path");
+const Restaurants = require("../DB/Restaurants");
+
+//<<db setup>>
+const db = require("../dbatlas");
+const dbName = "RestaurantsFinder";
+const collectionName = "Restaurants";
+
+//<< db init>>
+db.initialize(dbName, collectionName, function(dbCollection) { // successCallback
+  // get all items
+  dbCollection.find().toArray(function(err, result) {
+      if (err) throw err;
+        console.log(result);
+  });
+
+  // << db CRUD routes >>
+
+}, function(err) { // failureCallback
+  throw (err);
+});
+
+
+
 const server = Hapi.Server({
   port: process.env.PORT || 3000,
   host: "localhost",
@@ -11,6 +35,20 @@ const server = Hapi.Server({
     files: {
       relativeTo: path.join(__dirname, "public"),
     },
+  },
+});
+
+server.route({
+  method: "GET",
+  path: "/res",
+  handler: async (request, h) => {
+    try {
+      const result = await Restaurants.find({});
+      console.log(result);
+      return h.response(result);
+    } catch (error) {
+      return h.response("error");
+    }
   },
 });
 
@@ -25,6 +63,8 @@ server.route({
     }
   },
 });
+
+
 
 // server.route({
 //   method: "GET",
