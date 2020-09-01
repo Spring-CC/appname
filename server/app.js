@@ -7,53 +7,14 @@ const path = require("path");
 const Restaurants = require("../DB/Restaurants");
 
 //<<db setup>>
-const db = require("../dbatlas");
-const dbName = "RestaurantsFinder";
-const collectionName = "Restaurants";
+const DbConnection = require('../../db');
+// const dbName = "RestaurantsFinder";
+// const collectionName = "Restaurants";
 
-//<< db init>>
-db.initialize(dbName, collectionName, function(dbCollection) { // successCallback
-  // get all items
-  dbCollection.find().toArray(function(err, result) {
-      if (err) throw err;
-        console.log("SUCCESS");
-  });
-
-  // << db CRUD routes >>
-
-  // find all
-  server.route({
-    method: "GET",
-    path: "/restaurantAtlas",
-    handler: (request, h) => {
-        dbCollection.find().toArray((error, result)=> {
-          if (error) throw error;
-          response.json(result);
-        });
-      }
- });
-
- // update one
- server.route({
-  method: "PUT", 
-  path: "/restaurantAtlas/:id",
-  handler: (req, h) => {
-    const restId = req.params.id;
-    const item = req.body;
-    dbCollection.updateOne({id: restId}, {$set: item}, (error, result) => {
-      if(error) throw error;
-      //send back entire update list
-      dbCollection.find().toArray(function(_error, _result){
-        if(error) throw _error;
-        response.json(_result);
-      })
-    })
-  }
-})
-
-
-}, function(err) { // failureCallback
-  throw (err);
+router.get("/restAtlas", async (req, res) => {
+	const dbCollection = await DbConnection.getCollection("Restaurants");
+	const restaurants = await dbCollection.find().toArray();
+	res.json(restaurants);
 });
 
 
