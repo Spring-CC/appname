@@ -1,50 +1,52 @@
-const server = require("./app");
-const Bell = require("@hapi/bell");
-const dotenv = require("dotenv");
-dotenv.config();
+const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const path = require("path");
+const cors = require("cors");
+// const db = require("./server/db");
 
-const internals = {};
-internals.start = async function () {
-  const init = async () => {
-    await server.register(Bell);
-    server.auth.strategy("twitter", "bell", {
-      provider: "twitter",
-      password: "cookie_encryption_password_secure",
-      isSecure: false,
-      clientId: process.env.API_KEY, // Set client id
-      clientSecret: process.env.API_SECRET, // Set client secret
-    });
+const app = express();
 
-    server.route({
-      method: ["GET", "POST"],
-      path: "/login",
-      options: {
-        auth: {
-          mode: "try",
-          strategy: "twitter",
-        },
-        handler: function (request, h) {
-          if (!request.auth.isAuthenticated) {
-            return `Authentication failed due to: ${request.auth.error.message}`;
-          }
+app.use(
+  morgan(
+    ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'
+  )
+);
 
-          // Perform any account lookup or registration, setup local session,
-          // and redirect to the application. The third-party credentials are
-          // stored in request.auth.credentials. Any query parameters from
-          // the initial request are passed back via request.auth.credentials.query.
-
-          return h.redirect("/home");
-        },
-      },
-    });
-    await server.start();
-    console.log("Server running on %s", server.info.uri);
-  };
-  init();
-
-  process.on("unhandledRejection", (err) => {
-    console.log(err);
-    process.exit(1);
-  });
+const corsOptions = {
+  origin: "http://localhost:8081",
 };
-internals.start();
+
+app.use(cors(corsOptions));
+
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.resolve(__dirname, "..", "dist")));
+
+// simple route
+app.get("/", (req, res) => {
+  res.json({ message: "HIIIIIII SPRING" });
+});
+
+// db.mongoose
+//   .connect(db.url, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//   })
+//   .then(() => {
+//     console.log("Connected to the database!");
+//   })
+//   .catch(err => {
+//     console.log("Cannot connect to the database!", err);
+//     process.exit();
+//   });
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "..", "dist", "index.html"));
+});
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});

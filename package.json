@@ -3,10 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@hapi/bell": "^12.1.0",
-    "@hapi/cookie": "^11.0.1",
     "@hapi/hapi": "^20.0.0",
-    "@hapi/inert": "^6.0.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

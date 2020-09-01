@@ -1,13 +1,12 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-dotenv.config();
+// const dotenv = require("dotenv");
+// dotenv.config();
+// const mongoose = require("mongoose");
 
-mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true });
-const db = mongoose.connection;
+// mongoose.Promise = global.Promise;
 
-db.on("error", console.error.bind(console, "connection error"));
-db.once("open", function callback() {
-  console.log("Connection with database succeeded.");
-});
+// const db = {};
+// db.mongoose = mongoose;
+// db.url = process.env.DB_URL;
+// // db.resutaurants = require("./model.js")(mongoose);
 
-exports.db = db;
+// module.exports = db;
