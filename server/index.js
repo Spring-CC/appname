@@ -1,9 +1,12 @@
+require("dotenv").config();
+// const db = require("./db");
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
 // const db = require("./server/db");
+const DbConnection = require("../dbatlas");
 
 const app = express();
 
@@ -29,6 +32,32 @@ app.get("/", (req, res) => {
   res.json({ message: "HIIIIIII SPRING" });
 });
 
+//mongoDB routes**********************************************************************
+
+//get all restaurants
+app.get("/restAtlas", async (req, res) => {
+	const dbCollection = await DbConnection.getCollection("Restaurants");
+	const restaurants = await dbCollection.find().toArray();
+	res.json(restaurants);
+});
+
+//Get restaurants by ID
+app.get("/restAtlas/:id", async (req,res)=> {
+  const restId = req.params.id;
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurant = await dbCollection.findOne({id: restId});
+  res.json(restaurant);
+})
+
+//Get restaurants by category
+app.get("/restAtlas/:category/categories", async (req,res)=> {
+  const restCat = req.params.category;
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurant = await dbCollection.findOne({category: restCat});
+  res.json(restaurant);
+})
+
+//***************************************************************************************** */
 // db.mongoose
 //   .connect(db.url, {
 //     useNewUrlParser: true,
