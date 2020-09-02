@@ -17,6 +17,8 @@ export default function App() {
           <Route path="/about" component={About} />
 
           <Route path="/details" component={Details} />
+
+          <Route path="/login" />
         </Switch>
       </div>
     </Router>
