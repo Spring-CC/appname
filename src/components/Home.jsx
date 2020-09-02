@@ -7,6 +7,7 @@ import { Swipeable } from 'react-swipeable';
 import { useSelector, useDispatch } from "react-redux";
 import { increment } from "../actions";
 import data from '../data/restaurants.json';
+import Slider from './imageslider'
 
 export default function Home() {
 
@@ -27,12 +28,14 @@ export default function Home() {
         }
     }
 
+
     return (
         <>
             <div className="choice-container">
                 <Link className="choice-no" to="/" style={linkStyle} onClick={() => dispatch(increment())}>No</Link>
                 <Link className="choice-yes" to="/details" style={linkStyle}>Yes</Link>
             </div>
+            {/* <Slider className="slider"></Slider> */}
             <AliceCarousel className="picture-container" autoPlay autoPlayInterval={3000} buttonsDisabled={true}>
                 {images.map((image_url, index) => {
                     return <img src={image_url} className="sliderimg" alt="not loaded" key={index} />
