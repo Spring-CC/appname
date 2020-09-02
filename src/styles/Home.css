@@ -1,6 +1,5 @@
 .sliderimg{
-  width: 50%;
-  /* height: 50vh; */
+  height: 50vh;
 }
 
 .picture-container {
@@ -10,6 +9,7 @@
 .choice-container {
   display: flex;
   justify-content: center;
+  margin-bottom: 5vh;
 }
 
 .choice-no {

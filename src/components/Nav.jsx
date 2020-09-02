@@ -23,7 +23,13 @@ export default function Nav({ user }) {
           <li>About</li>
         </Link>
         {!user && (
-          <Link style={navStyle} onClick={this.forceUpdate} to="/login">
+          <Link
+            style={navStyle}
+            onClick={() => {
+              window.location.reload();
+            }}
+            to="/login"
+          >
             <li>Log In</li>
           </Link>
         )}

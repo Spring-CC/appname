@@ -22,8 +22,6 @@ export default function App() {
           <Route path="/about" component={About} />
 
           <Route path="/details" component={Details} />
-
-          <Redirect path="/login" />
         </Switch>
       </div>
     </Router>

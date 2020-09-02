@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -7,11 +9,7 @@ const session = require("express-session");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 const router = require("./auth0");
-const dotenv = require("dotenv");
-
-dotenv.config();
-// const db = require("./server/db");
-
+const DbConnection = require("../dbatlas");
 const app = express();
 
 app.use(
@@ -36,6 +34,32 @@ app.get("/", (req, res) => {
   res.json({ message: "HIIIIIII SPRING" });
 });
 
+//mongoDB routes**********************************************************************
+
+//get all restaurants
+app.get("/restAtlas", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurants = await dbCollection.find().toArray();
+  res.json(restaurants);
+});
+
+//Get restaurants by ID
+app.get("/restAtlas/:id", async (req, res) => {
+  const restId = req.params.id;
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurant = await dbCollection.findOne({ id: restId });
+  res.json(restaurant);
+});
+
+//Get restaurants by category
+app.get("/restAtlas/:category/categories", async (req, res) => {
+  const restCat = req.params.category;
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurant = await dbCollection.findOne({ category: restCat });
+  res.json(restaurant);
+});
+
+//***************************************************************************************** */
 // db.mongoose
 //   .connect(db.url, {
 //     useNewUrlParser: true,
