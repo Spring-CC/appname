@@ -11,8 +11,19 @@ export default function Filter() {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item href="#/action-1">Japanese</Dropdown.Item>
-          <Dropdown.Item href="#/action-2">Others</Dropdown.Item>
+          <Dropdown.Item href="#/action-1">
+            <label>
+              <input type="checkbox"></input>
+              Japanese
+            </label>
+          </Dropdown.Item>
+          <Dropdown.Item href="#/action-2">
+            {" "}
+            <label>
+              <input type="checkbox"></input>
+              Japanese
+            </label>
+          </Dropdown.Item>
           <Dropdown.Item href="#/action-3"></Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
