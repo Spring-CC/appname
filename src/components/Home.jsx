@@ -2,82 +2,55 @@ import React from "react";
 import "../styles/Home.css";
 import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
-import { Link } from "react-router-dom";
-import image1 from "../img/1.jpg";
-import image2 from "../img/2.jpeg";
-import image3 from "../img/3.jpg";
-import image4 from "../img/4.jpg";
-import data from "../data/restaurants.json";
-import { Swipeable } from "react-swipeable";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from 'react-router-dom';
+import { Swipeable } from 'react-swipeable';
+import { useSelector, useDispatch } from "react-redux";
+import { increment } from "../actions";
+import data from '../data/restaurants.json';
 
 export default function Home() {
-  const linkStyle = {
-    fontFamily: "verdana",
-  };
-  const restaurants = data.filter((restaurant) => restaurant.id === "g398515");
-  const images = [];
-  for (let key in restaurants[0].image_url) {
-    images.push(restaurants[0].image_url[key]);
-  }
-  const history = useHistory();
-  return (
-    <>
-      <div className="choice-container">
-        <Link className="choice-no" to="/" style={linkStyle}>
-          No
-        </Link>
-        <Link className="choice-yes" to="/details" style={linkStyle}>
-          Yes
-        </Link>
-      </div>
-      <div className="picture-container">
-        <AliceCarousel autoPlay autoPlayInterval={3000} buttonsDisabled={true}>
-          <img src={image1} className="sliderimg" alt="not loaded" />
-          <img src={image2} className="sliderimg" alt="not loaded" />
-          <img src={image3} className="sliderimg" alt="not loaded" />
-          <img src={image4} className="sliderimg" alt="not loaded" />
-        </AliceCarousel>
-      </div>
-      <div className="restaurant-info">
-        <div>Restaurant Name!</div>
-        <div>Type of Restaurant!</div>
-        <div>Location!</div>
-        <div>Operating Hours!</div>
-      </div>
-      <AliceCarousel
-        className="picture-container"
-        autoPlay
-        autoPlayInterval={3000}
-        buttonsDisabled={true}
-      >
-        {images.map((image_url, index) => {
-          return (
-            <img
-              src={image_url}
-              className="sliderimg"
-              alt="not loaded"
-              key={index}
-            />
-          );
-        })}
-      </AliceCarousel>
-      <Swipeable
-        onSwipedRight={(e) => history.push("/details")}
-        onSwipedLeft={(e) => history.push("/")}
-      >
-        {restaurants.map((restaurant) => {
-          return (
-            <div className="restaurant-info" key={restaurant.id}>
-              <div>{restaurant.name}</div>
-              <div>{restaurant.name_kana}</div>
-              <div>{restaurant.category}</div>
-              <div>{restaurant.address}</div>
-              <div>{restaurant.opentime}</div>
+
+    const history = useHistory();
+
+    const index = useSelector(state => state);
+    const dispatch = useDispatch();
+
+    const linkStyle = {
+        fontFamily: "verdana"
+    }
+
+    const restaurants = data.filter((restaurant, idx) => idx === index);
+    const images = [];
+    for (let key in restaurants[0].image_url) {
+        if (restaurants[0].image_url[key] !== "") {
+            images.push(restaurants[0].image_url[key]);
+        }
+    }
+
+    return (
+        <>
+            <div className="choice-container">
+                <Link className="choice-no" to="/" style={linkStyle} onClick={() => dispatch(increment())}>No</Link>
+                <Link className="choice-yes" to="/details" style={linkStyle}>Yes</Link>
             </div>
-          );
-        })}
-      </Swipeable>
-    </>
-  );
+            <AliceCarousel className="picture-container" autoPlay autoPlayInterval={3000} buttonsDisabled={true}>
+                {images.map((image_url, index) => {
+                    return <img src={image_url} className="sliderimg" alt="not loaded" key={index} />
+                })}
+            </AliceCarousel>
+            <Swipeable onSwipedRight={() => history.push('/details')} onSwipedLeft={() => history.push('/')}>
+                {restaurants.map(restaurant => {
+                    return (
+                        <div className="restaurant-info" key={restaurant.id}>
+                            <div>{restaurant.name}</div>
+                            <div>{restaurant.name_kana}</div>
+                            <div>{restaurant.category}</div>
+                            <div>{restaurant.address}</div>
+                            <div>{restaurant.opentime}</div>
+                        </div>
+                    );
+                })}
+            </Swipeable>
+        </>
+    );
 }
