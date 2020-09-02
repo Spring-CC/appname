@@ -54,6 +54,30 @@
   padding: 2vh 5vw;
   background-color: rgb(16, 139, 255);
   color: white;
+  /* font-size: 3vh; */
+}
+
+.title {
+  font-size: 5vh;
+  font-family: "ヒラギノ角ゴ Pro W3"
+}
+
+.kana {
+  font-size: 4vh;
+  font-family: "ヒラギノ角ゴ Pro W3"
+}
+
+.category {
+  font-size: 3vh;
+  font-family: "ヒラギノ角ゴ Pro W3"
+}
+
+.address {
+  font-size: 3vh;
+  font-family: "ヒラギノ角ゴ Pro W3"
+}
+
+.open-time {
   font-size: 3vh;
 }
 
@@ -276,4 +300,5 @@ ol, li {
   line-height: 4rem;
   text-align: center;
   pointer-events: none;
+  font-family: "ヒラギノ角ゴ Pro W3"
 }
