@@ -64,6 +64,24 @@ app.get("/restAtlas/:category/categories", async (req,res)=> {
   res.json(restaurant);
 })
 
+// Post new user
+app.post("/users", async (req,res)=> {
+  const newUser = req.body;
+  console.log("Adding new User", newUser);
+
+  const dbCollection = await DbConnection.getCollection("Users");
+  let user = await dbCollection.find().toArray();
+
+  await dbCollection.insertOne({
+          username : newUser.username,
+          password: newUser.password,
+  });
+
+  //return updated list
+  users = await dbCollection.find().toArray();
+  res.json(users);
+})
+
 //***************************************************************************************** */
 // db.mongoose
 //   .connect(db.url, {
