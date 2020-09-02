@@ -42,11 +42,11 @@ export default function Home() {
                 {restaurants.map(restaurant => {
                     return (
                         <div className="restaurant-info" key={restaurant.id}>
-                            <div>{restaurant.name}</div>
-                            <div>{restaurant.name_kana}</div>
-                            <div>{restaurant.category}</div>
-                            <div>{restaurant.address}</div>
-                            <div>{restaurant.opentime}</div>
+                            <div class="title">{restaurant.name}</div>
+                            <div class="kana">{restaurant.name_kana}</div>
+                            <div class="category">{restaurant.category}</div>
+                            <div class="address">{restaurant.address}</div>
+                            <div class="open-time">{restaurant.opentime}</div>
                         </div>
                     );
                 })}
