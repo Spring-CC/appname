@@ -1,6 +1,6 @@
-import React from 'react';
-import '../styles/Home.css';
-import AliceCarousel from 'react-alice-carousel';
+import React from "react";
+import "../styles/Home.css";
+import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
 import { Link, useHistory } from 'react-router-dom';
 import { Swipeable } from 'react-swipeable';
