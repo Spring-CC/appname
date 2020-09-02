@@ -4,7 +4,12 @@ import Nav from "./components/Nav";
 import Home from "./components/Home";
 import About from "./components/About";
 import Details from "./components/Details";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  Redirect,
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
 export default function App() {
   return (
@@ -18,7 +23,7 @@ export default function App() {
 
           <Route path="/details" component={Details} />
 
-          <Route path="/login" />
+          <Redirect path="/login" />
         </Switch>
       </div>
     </Router>

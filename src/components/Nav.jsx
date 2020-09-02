@@ -23,7 +23,7 @@ export default function Nav({ user }) {
           <li>About</li>
         </Link>
         {!user && (
-          <Link style={navStyle} to="/login">
+          <Link style={navStyle} onClick={this.forceUpdate} to="/login">
             <li>Log In</li>
           </Link>
         )}
