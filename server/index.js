@@ -1,5 +1,5 @@
 require("dotenv").config();
-// const db = require("./db");
+
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -9,12 +9,7 @@ const session = require("express-session");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 const router = require("./auth0");
-const dotenv = require("dotenv");
-
-dotenv.config();
-// const db = require("./server/db");
 const DbConnection = require("../dbatlas");
-
 const app = express();
 
 app.use(
@@ -43,26 +38,26 @@ app.get("/", (req, res) => {
 
 //get all restaurants
 app.get("/restAtlas", async (req, res) => {
-	const dbCollection = await DbConnection.getCollection("Restaurants");
-	const restaurants = await dbCollection.find().toArray();
-	res.json(restaurants);
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurants = await dbCollection.find().toArray();
+  res.json(restaurants);
 });
 
 //Get restaurants by ID
-app.get("/restAtlas/:id", async (req,res)=> {
+app.get("/restAtlas/:id", async (req, res) => {
   const restId = req.params.id;
   const dbCollection = await DbConnection.getCollection("Restaurants");
-  const restaurant = await dbCollection.findOne({id: restId});
+  const restaurant = await dbCollection.findOne({ id: restId });
   res.json(restaurant);
-})
+});
 
 //Get restaurants by category
-app.get("/restAtlas/:category/categories", async (req,res)=> {
+app.get("/restAtlas/:category/categories", async (req, res) => {
   const restCat = req.params.category;
   const dbCollection = await DbConnection.getCollection("Restaurants");
-  const restaurant = await dbCollection.findOne({category: restCat});
+  const restaurant = await dbCollection.findOne({ category: restCat });
   res.json(restaurant);
-})
+});
 
 // Post new user
 app.post("/users", async (req,res)=> {
@@ -122,8 +117,7 @@ var strategy = new Auth0Strategy(
     domain: process.env.AUTH0_DOMAIN,
     clientID: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL:
-      process.env.AUTH0_CALLBACK_URL || "http://localhost:8080/callback",
+    callbackURL: process.env.AUTH0_CALLBACK_URL || "http://localhost:8080/",
   },
   function (accessToken, refreshToken, extraParams, profile, done) {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
