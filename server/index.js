@@ -10,6 +10,9 @@ const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 const router = require("./auth0");
 const dotenv = require("dotenv");
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const saltRounds = 10;
 
 dotenv.config();
 // const db = require("./server/db");
@@ -24,7 +27,7 @@ app.use(
 );
 
 const corsOptions = {
-  origin: "http://localhost:8080",
+  origin: "http://localhost:19006",
 };
 
 app.use(cors(corsOptions));
@@ -48,6 +51,13 @@ app.get("/restAtlas", async (req, res) => {
 	res.json(restaurants);
 });
 
+//get all users
+app.get("/users", async (req,res)=> {
+  const dbCollection = await DbConnection.getCollection("Users");
+  const users = await dbCollection.find().toArray();
+  res.json(users);
+})
+
 //Get restaurants by ID
 app.get("/restAtlas/:id", async (req,res)=> {
   const restId = req.params.id;
@@ -69,12 +79,14 @@ app.post("/users", async (req,res)=> {
   const newUser = req.body;
   console.log("Adding new User", newUser);
 
+  const hashPassword = await bcrypt.hash(newUser.password, saltRounds);
+
   const dbCollection = await DbConnection.getCollection("Users");
   let user = await dbCollection.find().toArray();
 
   await dbCollection.insertOne({
           username : newUser.username,
-          password: newUser.password,
+          password: hashPassword,
   });
 
   //return updated list
