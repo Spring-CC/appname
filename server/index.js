@@ -1,5 +1,5 @@
 require("dotenv").config();
-// const db = require("./db");
+
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -9,6 +9,7 @@ const session = require("express-session");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 const router = require("./auth0");
+
 const dotenv = require("dotenv");
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
@@ -19,6 +20,7 @@ dotenv.config();
 // const db = require("./server/db");
 const DbConnection = require("../dbatlas");
 const Favorites = mongoose.model("Favorites");
+
 const app = express();
 const mongoURI = ""+process.env.API_URL+""
 
@@ -59,9 +61,9 @@ app.get("/", (req, res) => {
 
 //get all restaurants
 app.get("/restAtlas", async (req, res) => {
-	const dbCollection = await DbConnection.getCollection("Restaurants");
-	const restaurants = await dbCollection.find().toArray();
-	res.json(restaurants);
+  const dbCollection = await DbConnection.getCollection("Restaurants");
+  const restaurants = await dbCollection.find().toArray();
+  res.json(restaurants);
 });
 
 //get all users
@@ -72,40 +74,70 @@ app.get("/users", async (req,res)=> {
 })
 
 //Get restaurants by ID
-app.get("/restAtlas/:id", async (req,res)=> {
+app.get("/restAtlas/:id", async (req, res) => {
   const restId = req.params.id;
   const dbCollection = await DbConnection.getCollection("Restaurants");
-  const restaurant = await dbCollection.findOne({id: restId});
+  const restaurant = await dbCollection.findOne({ id: restId });
   res.json(restaurant);
-})
+});
 
 //Get restaurants by category
-app.get("/restAtlas/:category/categories", async (req,res)=> {
+app.get("/restAtlas/:category/categories", async (req, res) => {
   const restCat = req.params.category;
   const dbCollection = await DbConnection.getCollection("Restaurants");
-  const restaurant = await dbCollection.findOne({category: restCat});
+  const restaurant = await dbCollection.findOne({ category: restCat });
   res.json(restaurant);
-})
+});
 
 // Post new user
-app.post("/users", async (req,res)=> {
+app.post("/users", async (req, res) => {
   const newUser = req.body;
   console.log("Adding new User", newUser);
 
   const hashPassword = await bcrypt.hash(newUser.password, saltRounds);
 
   const dbCollection = await DbConnection.getCollection("Users");
-  let user = await dbCollection.find().toArray();
+  const user = await dbCollection.find().toArray();
 
   await dbCollection.insertOne({
+
           username : newUser.username,
           password: hashPassword,
+
   });
 
   //return updated list
   const users = await dbCollection.find().toArray();
   res.json(users);
-})
+});
+
+//get dummyusers
+app.get("/dummyusers", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("dummyuser");
+  const dummyusers = await dbCollection.find().toArray();
+  res.json(dummyusers);
+});
+
+//Post user preference
+app.post("/dummyusers/:id", async (req, res) => {
+  const restId = req.params.id;
+  const dbCollection = await DbConnection.getCollection("dummyuser");
+  dbCollection.findOneAndUpdate(
+    { userid: "a111" },
+    { $push: { swiped_right: restId } },
+    function (error, success) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(success);
+      }
+    }
+  );
+
+  //return updated dummyuser
+  const dummyuser = await dbCollection.find({ userid: "a111" }).toArray();
+  res.json(dummyuser);
+});
 
 //Update user
 app.post("/favoritesUpdate", async (req,res)=> {
@@ -187,8 +219,7 @@ var strategy = new Auth0Strategy(
     domain: process.env.AUTH0_DOMAIN,
     clientID: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL:
-      process.env.AUTH0_CALLBACK_URL || "http://localhost:8080/callback",
+    callbackURL: process.env.AUTH0_CALLBACK_URL || "http://localhost:8080/",
   },
   function (accessToken, refreshToken, extraParams, profile, done) {
     // accessToken is the token to call Auth0 API (not needed in the most cases)

@@ -1,12 +1,15 @@
-import React from 'react'
 
+import React, { useEffect } from "react";
 
-function Login() {
-    return (
-        <div>
-            
-        </div>
-    )
+export default function Login() {
+  useEffect(() => {
+    window.location.reload();
+  }, []);
+
+  return (
+    <div>
+      <h1>Loading</h1>
+    </div>
+  );
 }
 
-export default Login

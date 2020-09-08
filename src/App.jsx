@@ -4,7 +4,14 @@ import Nav from "./components/Nav";
 import Home from "./components/Home";
 import About from "./components/About";
 import Details from "./components/Details";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Login from "./components/Login";
+
+import {
+  Redirect,
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
 export default function App() {
   return (
@@ -18,7 +25,7 @@ export default function App() {
 
           <Route path="/details" component={Details} />
 
-          <Route path="/login" />
+          <Route path="/login" component={Login} />
         </Switch>
       </div>
     </Router>
