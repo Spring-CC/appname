@@ -13,13 +13,26 @@ const dotenv = require("dotenv");
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const saltRounds = 10;
+require("../DB/Favorites")
 
 dotenv.config();
 // const db = require("./server/db");
 const DbConnection = require("../dbatlas");
-
+const Favorites = mongoose.model("Favorites");
 const app = express();
+const mongoURI = ""+process.env.API_URL+""
 
+mongoose.connect(mongoURI,{
+  useNewUrlParser:true,
+  useUnifiedTopology: true
+})
+
+mongoose.connection.on("connected",()=>{
+  console.log("connected to mongodb")
+})
+mongoose.connection.on("error",(err)=>{
+  console.log("error", err)
+})
 app.use(
   morgan(
     ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'
@@ -90,9 +103,38 @@ app.post("/users", async (req,res)=> {
   });
 
   //return updated list
-  users = await dbCollection.find().toArray();
+  const users = await dbCollection.find().toArray();
   res.json(users);
 })
+
+//Mongoose routes**********************************************************************
+app.post("/Favorites", (req,res)=>{
+  const favorite = new Favorites({
+    client_Id: req.body.client_Id,
+    restaurant_Id : req.body.restaurant_Id,
+  })
+  favorite.save()
+  .then(data => {
+      console.log(data)
+      res.send("posted")
+  }).catch(err =>{
+   console.log(err)
+})
+})
+
+app.post("/update", (req,res)=>{
+  const userId = req.body.client_Id
+  const restaurant = req.body.restaurant_Id;
+   Favorites.findByIdAndUpdate(userId, {
+      $push:{restaurant_Id : restaurant} 
+   } ).then(data => {
+       console.log(data)
+       res.send("update")
+   }).catch(err =>{
+       console.log(err)
+   })
+})
+
 
 //***************************************************************************************** */
 // db.mongoose
