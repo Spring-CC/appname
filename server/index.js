@@ -73,7 +73,7 @@ app.post("/users", async (req, res) => {
   });
 
   //return updated list
-  users = await dbCollection.find().toArray();
+  const users = await dbCollection.find().toArray();
   res.json(users);
 })
 
