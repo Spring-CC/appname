@@ -120,11 +120,13 @@ app.get("/dummyusers", async (req, res) => {
 
 //Post user preference
 app.post("/dummyusers/:id", async (req, res) => {
-  const restId = req.params.id;
+  const userId = req.params.id;
+  const restId = req.body.restId;
   const dbCollection = await DbConnection.getCollection("dummyuser");
   dbCollection.findOneAndUpdate(
-    { userid: "a111" },
+    { userid: userId },
     { $push: { swiped_right: restId } },
+    { upsert: true },
     function (error, success) {
       if (error) {
         console.log(error);
@@ -135,7 +137,7 @@ app.post("/dummyusers/:id", async (req, res) => {
   );
 
   //return updated dummyuser
-  const dummyuser = await dbCollection.find({ userid: "a111" }).toArray();
+  const dummyuser = await dbCollection.find({ userid: userId }).toArray();
   res.json(dummyuser);
 });
 
