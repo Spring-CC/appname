@@ -19,7 +19,7 @@ app.use(
 );
 
 const corsOptions = {
-  origin: "http://localhost:8080",
+  origin: "http://localhost:19006",
 };
 
 app.use(cors(corsOptions));
@@ -60,7 +60,7 @@ app.get("/restAtlas/:category/categories", async (req, res) => {
 });
 
 // Post new user
-app.post("/users", async (req,res)=> {
+app.post("/users", async (req, res) => {
   const newUser = req.body;
   console.log("Adding new User", newUser);
 
@@ -68,8 +68,8 @@ app.post("/users", async (req,res)=> {
   let user = await dbCollection.find().toArray();
 
   await dbCollection.insertOne({
-          username : newUser.username,
-          password: newUser.password,
+    username: newUser.username,
+    password: newUser.password,
   });
 
   //return updated list
