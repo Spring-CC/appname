@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const FavoritesSchema = new mongoose.Schema({
-    client_Id: String,
+    userEmail: String,
     restaurant_Id: [String],
 })
 

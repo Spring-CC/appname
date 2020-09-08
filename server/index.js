@@ -107,10 +107,34 @@ app.post("/users", async (req,res)=> {
   res.json(users);
 })
 
+//Update user
+app.post("/favoritesUpdate", async (req,res)=> {
+  try {
+    const userEmail = req.body.userEmail
+    const restaurant = req.body.restaurant_Id;
+    const dbCollection = await DbConnection.getCollection("favorites");
+    await dbCollection.findOneAndUpdate(
+      {userEmail: userEmail},
+      {$push:{restaurant_Id : restaurant}}
+      )
+    res.json("update it");
+  } catch (err){
+    console.log(err)
+  }
+
+})
+
+// get favorites
+app.get("/favoritesInfo", async (req,res)=> {
+  const dbCollection = await DbConnection.getCollection("favorites");
+  const favorites = await dbCollection.find().toArray();
+  res.json(favorites);
+})
+
 //Mongoose routes**********************************************************************
 app.post("/Favorites", (req,res)=>{
   const favorite = new Favorites({
-    client_Id: req.body.client_Id,
+    userEmail: req.body.userEmail,
     restaurant_Id : req.body.restaurant_Id,
   })
   favorite.save()
@@ -120,19 +144,6 @@ app.post("/Favorites", (req,res)=>{
   }).catch(err =>{
    console.log(err)
 })
-})
-
-app.post("/update", (req,res)=>{
-  const userId = req.body.client_Id
-  const restaurant = req.body.restaurant_Id;
-   Favorites.findByIdAndUpdate(userId, {
-      $push:{restaurant_Id : restaurant} 
-   } ).then(data => {
-       console.log(data)
-       res.send("update")
-   }).catch(err =>{
-       console.log(err)
-   })
 })
 
 
