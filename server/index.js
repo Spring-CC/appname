@@ -60,22 +60,50 @@ app.get("/restAtlas/:category/categories", async (req, res) => {
 });
 
 // Post new user
-app.post("/users", async (req,res)=> {
+app.post("/users", async (req, res) => {
   const newUser = req.body;
   console.log("Adding new User", newUser);
 
   const dbCollection = await DbConnection.getCollection("Users");
-  let user = await dbCollection.find().toArray();
+  const user = await dbCollection.find().toArray();
 
   await dbCollection.insertOne({
-          username : newUser.username,
-          password: newUser.password,
+    username: newUser.username,
+    password: newUser.password,
   });
 
   //return updated list
-  users = await dbCollection.find().toArray();
+  const users = await dbCollection.find().toArray();
   res.json(users);
-})
+});
+
+//get dummyusers
+app.get("/dummyusers", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("dummyuser");
+  const dummyusers = await dbCollection.find().toArray();
+  res.json(dummyusers);
+});
+
+//Post user preference
+app.post("/dummyusers/:id", async (req, res) => {
+  const restId = req.params.id;
+  const dbCollection = await DbConnection.getCollection("dummyuser");
+  dbCollection.findOneAndUpdate(
+    { userid: "a111" },
+    { $push: { swiped_right: restId } },
+    function (error, success) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(success);
+      }
+    }
+  );
+
+  //return updated dummyuser
+  const dummyuser = await dbCollection.find({ userid: "a111" }).toArray();
+  res.json(dummyuser);
+});
 
 //***************************************************************************************** */
 // db.mongoose
