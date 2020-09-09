@@ -144,11 +144,11 @@ app.post("/dummyusers/:id", async (req, res) => {
 //Update user
 app.post("/favoritesUpdate", async (req,res)=> {
   try {
-    const userEmail = req.body.userEmail
+    const user = req.body.user_Id
     const restaurant = req.body.restaurant_Id;
     const dbCollection = await DbConnection.getCollection("favorites");
     await dbCollection.findOneAndUpdate(
-      {userEmail: userEmail},
+      {user_Id: user},
       {$push:{restaurant_Id : restaurant}}
       )
     res.json("update it");
@@ -168,7 +168,7 @@ app.get("/favoritesInfo", async (req,res)=> {
 //Mongoose routes**********************************************************************
 app.post("/Favorites", (req,res)=>{
   const favorite = new Favorites({
-    userEmail: req.body.userEmail,
+    user_Id: req.body.user_Id,
     restaurant_Id : req.body.restaurant_Id,
   })
   favorite.save()
