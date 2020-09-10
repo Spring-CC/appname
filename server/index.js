@@ -139,7 +139,7 @@ app.post("/dummyusers/:id", async (req, res) => {
   res.json(dummyuser);
 });
 
-//Update user
+//add favorite to user
 app.post("/favoritesUpdate", async (req,res)=> {
   try {
     const user = req.body.user_Id
@@ -152,6 +152,22 @@ app.post("/favoritesUpdate", async (req,res)=> {
     res.json("update it");
   } catch (err){
     console.log(err)
+  }
+
+})
+
+//delete favorite in user
+app.patch("/deleteFavorite", async(req,res)=>{
+  try {
+    const user = req.body.user_Id
+    const restaurant = req.body.restaurant_Id;
+    const dbCollection = await DbConnection.getCollection("favorites");
+    await dbCollection.updateOne(
+      {user_Id :user}, 
+      {$pull:{restaurant_Id:restaurant}});
+      res.json("deleted restaurant");
+  } catch(err){
+    console.log(err);
   }
 
 })
