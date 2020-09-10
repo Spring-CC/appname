@@ -9,9 +9,32 @@ const session = require("express-session");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 const router = require("./auth0");
-const DbConnection = require("../dbatlas");
-const app = express();
 
+const dotenv = require("dotenv");
+const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
+const saltRounds = 10;
+require("../DB/Favorites");
+
+dotenv.config();
+// const db = require("./server/db");
+const DbConnection = require("../dbatlas");
+const Favorites = mongoose.model("Favorites");
+
+const app = express();
+const mongoURI = "" + process.env.API_URL + "";
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+mongoose.connection.on("connected", () => {
+  console.log("connected to mongodb");
+});
+mongoose.connection.on("error", (err) => {
+  console.log("error", err);
+});
 app.use(
   morgan(
     ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'
@@ -19,7 +42,7 @@ app.use(
 );
 
 const corsOptions = {
-  origin: "http://localhost:8080",
+  origin: "http://localhost:19006",
 };
 
 app.use(cors(corsOptions));
@@ -43,6 +66,13 @@ app.get("/restAtlas", async (req, res) => {
   res.json(restaurants);
 });
 
+//get all users
+app.get("/users", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("Users");
+  const users = await dbCollection.find().toArray();
+  res.json(users);
+});
+
 //Get restaurants by ID
 app.get("/restAtlas/:id", async (req, res) => {
   const restId = req.params.id;
@@ -60,27 +90,118 @@ app.get("/restAtlas/:category/categories", async (req, res) => {
 });
 
 // Post new user
-app.post("/users", async (req,res)=> {
+app.post("/users", async (req, res) => {
   const newUser = req.body;
   console.log("Adding new User", newUser);
 
+  const hashPassword = await bcrypt.hash(newUser.password, saltRounds);
+
   const dbCollection = await DbConnection.getCollection("Users");
-  let user = await dbCollection.find().toArray();
+  const user = await dbCollection.find().toArray();
 
   await dbCollection.insertOne({
-          username : newUser.username,
-          password: newUser.password,
+    username: newUser.username,
+    password: hashPassword,
   });
 
   //return updated list
-  users = await dbCollection.find().toArray();
+  const users = await dbCollection.find().toArray();
   res.json(users);
-})
+});
 
-// Post swiped right data
-app.post("/swipedright", async(req,res)=>{
-  
-})
+//get dummyusers
+app.get("/dummyusers", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("dummyuser");
+  const dummyusers = await dbCollection.find().toArray();
+  res.json(dummyusers);
+});
+
+//Post user preference
+app.post("/dummyusers/:id", async (req, res) => {
+  const userId = req.params.id;
+  const restId = req.body.restId;
+  const dbCollection = await DbConnection.getCollection("dummyuser");
+  dbCollection.findOneAndUpdate(
+    { userid: userId },
+    { $push: { swiped_right: restId } },
+    { upsert: true },
+    function (error, success) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(success);
+      }
+    }
+  );
+
+  //return updated dummyuser
+  const dummyuser = await dbCollection.find({ userid: userId }).toArray();
+  res.json(dummyuser);
+});
+
+//add favorite to user
+app.post("/favoritesUpdate", async (req, res) => {
+  try {
+    const user = req.body.user_Id;
+    const restaurant = req.body.restaurant_Id;
+    const dbCollection = await DbConnection.getCollection("favorites");
+    await dbCollection.findOneAndUpdate(
+      { user_Id: user },
+      { $push: { restaurant_Id: restaurant } }
+    );
+    res.json("update it");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//delete favorite in user
+app.patch("/deleteFavorite", async (req, res) => {
+  try {
+    const user = req.body.user_Id;
+    const restaurant = req.body.restaurant_Id;
+    const dbCollection = await DbConnection.getCollection("favorites");
+    await dbCollection.updateOne(
+      { user_Id: user },
+      { $pull: { restaurant_Id: restaurant } }
+    );
+    res.json("deleted restaurant");
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// get favorites
+app.get("/favoritesInfo", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("favorites");
+  const favorites = await dbCollection.find().toArray();
+  res.json(favorites);
+});
+
+//Mongoose routes**********************************************************************
+app.post("/Favorites", (req, res) => {
+  const favorite = new Favorites({
+    user_Id: req.body.user_Id,
+    restaurant_Id: req.body.restaurant_Id,
+  });
+  favorite
+    .save()
+    .then((data) => {
+      console.log(data);
+      res.send("posted");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// Get restaurants testuser liked : recommender system ****************************************************
+app.get("/dummyfavorites/:userid", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("Testdata");
+  const dummyusers = await dbCollection.findOne({ userid: JSON.stringify(req.params.userid) });
+  console.log(dummyusers)
+  res.json(dummyusers.swiped_right);
+});
 
 //***************************************************************************************** */
 // db.mongoose
