@@ -77,6 +77,11 @@ app.post("/users", async (req,res)=> {
   res.json(users);
 })
 
+// Post swiped right data
+app.post("/swipedright", async(req,res)=>{
+  
+})
+
 //***************************************************************************************** */
 // db.mongoose
 //   .connect(db.url, {
