@@ -112,17 +112,17 @@ app.post("/users", async (req, res) => {
 });
 
 //get dummyusers
-app.get("/dummyusers", async (req, res) => {
-  const dbCollection = await DbConnection.getCollection("dummyuser");
+app.get("/testdata", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("Testdata");
   const dummyusers = await dbCollection.find().toArray();
   res.json(dummyusers);
 });
 
 //Post user preference
-app.post("/dummyusers/:id", async (req, res) => {
+app.post("/testdata/:id", async (req, res) => {
   const userId = req.params.id;
   const restId = req.body.restId;
-  const dbCollection = await DbConnection.getCollection("dummyuser");
+  const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
     { userid: userId },
     { $push: { swiped_right: restId } },
