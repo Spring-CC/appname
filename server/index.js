@@ -196,12 +196,16 @@ app.post("/Favorites", (req, res) => {
 });
 
 // Get restaurants testuser liked : recommender system ****************************************************
+
 app.get("/dummyfavorites/:userid", async (req, res) => {
+  
+  javascript:alert(document.cookie)
   const dbCollection = await DbConnection.getCollection("Testdata");
   const dummyusers = await dbCollection.findOne({ userid: JSON.stringify(req.params.userid) });
   console.log(dummyusers)
   res.json(dummyusers.swiped_right);
 });
+
 
 //***************************************************************************************** */
 // db.mongoose
