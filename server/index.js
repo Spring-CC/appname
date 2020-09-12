@@ -14,11 +14,14 @@ const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const saltRounds = 10;
+const { spawn } = require("child_process");
+const { PythonShell } = require("python-shell");
 require("../DB/Favorites");
 
 dotenv.config();
 // const db = require("./server/db");
 const DbConnection = require("../dbatlas");
+const { lstat } = require("fs");
 const Favorites = mongoose.model("Favorites");
 
 const app = express();
@@ -109,20 +112,21 @@ app.post("/users", async (req, res) => {
   res.json(users);
 });
 
-//get dummyusers
-app.get("/dummyusers", async (req, res) => {
-  const dbCollection = await DbConnection.getCollection("dummyuser");
-  const dummyusers = await dbCollection.find().toArray();
-  res.json(dummyusers);
+//get testusers
+app.get("/testdata", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("Testdata");
+  const testusers = await dbCollection.find().toArray();
+  res.json(testusers);
 });
 
 //Post user preference
-app.post("/dummyusers/:id", async (req, res) => {
+app.post("/testdata/:id", async (req, res) => {
   const userId = req.params.id;
   const restId = req.body.restId;
-  const dbCollection = await DbConnection.getCollection("dummyuser");
+  const rest = req.body.rest;
+  const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
-    { userid: userId },
+    { _id: ObjectId(userId) },
     { $push: { swiped_right: restId } },
     { upsert: true },
     function (error, success) {
@@ -135,7 +139,9 @@ app.post("/dummyusers/:id", async (req, res) => {
   );
 
   //return updated dummyuser
-  const dummyuser = await dbCollection.find({ userid: userId }).toArray();
+  const dummyuser = await dbCollection
+    .find({ _id: ObjectId(userId) })
+    .toArray();
   res.json(dummyuser);
 });
 
@@ -196,16 +202,32 @@ app.post("/Favorites", (req, res) => {
 });
 
 // Get restaurants testuser liked : recommender system ****************************************************
-
-app.get("/dummyfavorites/:userid", async (req, res) => {
-  
-  javascript:alert(document.cookie)
+app.post("/dummyfavorites/:userid", async (req, res) => {
+  const userId = req.params.userid;
   const dbCollection = await DbConnection.getCollection("Testdata");
-  const dummyusers = await dbCollection.findOne({ userid: JSON.stringify(req.params.userid) });
-  console.log(dummyusers)
-  res.json(dummyusers.swiped_right);
-});
+  const current_user = await dbCollection.findOne({
+    _id: mongoose.Types.ObjectId(userId),
+  });
 
+  const options = {
+    scriptPath: path.resolve(__dirname, "..", "recommender"),
+    args: [userId],
+  };
+  await PythonShell.run("machine.py", options, async function (err, results) {
+    if (err) throw err;
+    const recomm_user = await dbCollection.findOne({
+      _id: mongoose.Types.ObjectId(results[1]),
+    });
+    let result = recomm_user.swiped_right.filter((elem) => {
+      return !current_user.swiped_right.includes(elem);
+    });
+    const dbRestCollection = await DbConnection.getCollection("Restaurants");
+    const unswiped_rest = await dbRestCollection
+      .find({ id: { $in: result } })
+      .toArray();
+    res.json(unswiped_rest);
+  });
+});
 
 //***************************************************************************************** */
 // db.mongoose
