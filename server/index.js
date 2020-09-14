@@ -11,30 +11,33 @@ const Auth0Strategy = require("passport-auth0");
 const router = require("./auth0");
 
 const dotenv = require("dotenv");
-const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
 const saltRounds = 10;
-require("../DB/Favorites")
+const { spawn } = require("child_process");
+const { PythonShell } = require("python-shell");
+require("../DB/Favorites");
 
 dotenv.config();
 // const db = require("./server/db");
 const DbConnection = require("../dbatlas");
+const { lstat } = require("fs");
 const Favorites = mongoose.model("Favorites");
 
 const app = express();
-const mongoURI = ""+process.env.API_URL+""
+const mongoURI = "" + process.env.API_URL + "";
 
-mongoose.connect(mongoURI,{
-  useNewUrlParser:true,
-  useUnifiedTopology: true
-})
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-mongoose.connection.on("connected",()=>{
-  console.log("connected to mongodb")
-})
-mongoose.connection.on("error",(err)=>{
-  console.log("error", err)
-})
+mongoose.connection.on("connected", () => {
+  console.log("connected to mongodb");
+});
+mongoose.connection.on("error", (err) => {
+  console.log("error", err);
+});
 app.use(
   morgan(
     ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms'
@@ -67,11 +70,11 @@ app.get("/restAtlas", async (req, res) => {
 });
 
 //get all users
-app.get("/users", async (req,res)=> {
+app.get("/users", async (req, res) => {
   const dbCollection = await DbConnection.getCollection("Users");
   const users = await dbCollection.find().toArray();
   res.json(users);
-})
+});
 
 //Get restaurants by ID
 app.get("/restAtlas/:id", async (req, res) => {
@@ -100,10 +103,8 @@ app.post("/users", async (req, res) => {
   const user = await dbCollection.find().toArray();
 
   await dbCollection.insertOne({
-
-          username : newUser.username,
-          password: hashPassword,
-
+    username: newUser.username,
+    password: hashPassword,
   });
 
   //return updated list
@@ -111,20 +112,21 @@ app.post("/users", async (req, res) => {
   res.json(users);
 });
 
-//get dummyusers
+//get testusers
 app.get("/testdata", async (req, res) => {
   const dbCollection = await DbConnection.getCollection("Testdata");
-  const dummyusers = await dbCollection.find().toArray();
-  res.json(dummyusers);
+  const testusers = await dbCollection.find().toArray();
+  res.json(testusers);
 });
 
 //Post user preference
 app.post("/testdata/:id", async (req, res) => {
   const userId = req.params.id;
   const restId = req.body.restId;
+  const rest = req.body.rest;
   const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
-    { userid: userId },
+    { _id: ObjectId(userId) },
     { $push: { swiped_right: restId } },
     { upsert: true },
     function (error, success) {
@@ -137,65 +139,95 @@ app.post("/testdata/:id", async (req, res) => {
   );
 
   //return updated dummyuser
-  const dummyuser = await dbCollection.find({ userid: userId }).toArray();
+  const dummyuser = await dbCollection
+    .find({ _id: ObjectId(userId) })
+    .toArray();
   res.json(dummyuser);
 });
 
 //add favorite to user
-app.post("/favoritesUpdate", async (req,res)=> {
+app.post("/favoritesUpdate", async (req, res) => {
   try {
-    const user = req.body.user_Id
+    const user = req.body.user_Id;
     const restaurant = req.body.restaurant_Id;
     const dbCollection = await DbConnection.getCollection("favorites");
     await dbCollection.findOneAndUpdate(
-      {user_Id: user},
-      {$push:{restaurant_Id : restaurant}}
-      )
+      { user_Id: user },
+      { $push: { restaurant_Id: restaurant } }
+    );
     res.json("update it");
-  } catch (err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-
-})
+});
 
 //delete favorite in user
-app.patch("/deleteFavorite", async(req,res)=>{
+app.patch("/deleteFavorite", async (req, res) => {
   try {
-    const user = req.body.user_Id
+    const user = req.body.user_Id;
     const restaurant = req.body.restaurant_Id;
     const dbCollection = await DbConnection.getCollection("favorites");
     await dbCollection.updateOne(
-      {user_Id :user}, 
-      {$pull:{restaurant_Id:restaurant}});
-      res.json("deleted restaurant");
-  } catch(err){
+      { user_Id: user },
+      { $pull: { restaurant_Id: restaurant } }
+    );
+    res.json("deleted restaurant");
+  } catch (err) {
     console.log(err);
   }
-
-})
+});
 
 // get favorites
-app.get("/favoritesInfo", async (req,res)=> {
+app.get("/favoritesInfo", async (req, res) => {
   const dbCollection = await DbConnection.getCollection("favorites");
   const favorites = await dbCollection.find().toArray();
   res.json(favorites);
-})
+});
 
 //Mongoose routes**********************************************************************
-app.post("/Favorites", (req,res)=>{
+app.post("/Favorites", (req, res) => {
   const favorite = new Favorites({
     user_Id: req.body.user_Id,
-    restaurant_Id : req.body.restaurant_Id,
-  })
-  favorite.save()
-  .then(data => {
-      console.log(data)
-      res.send("posted")
-  }).catch(err =>{
-   console.log(err)
-})
-})
+    restaurant_Id: req.body.restaurant_Id,
+  });
+  favorite
+    .save()
+    .then((data) => {
+      console.log(data);
+      res.send("posted");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
+// Get restaurants testuser liked : recommender system ****************************************************
+app.post("/dummyfavorites/:userid", async (req, res) => {
+  const userId = req.params.userid;
+  const dbCollection = await DbConnection.getCollection("Testdata");
+  const current_user = await dbCollection.findOne({
+    _id: mongoose.Types.ObjectId(userId),
+  });
+
+  const options = {
+    scriptPath: path.resolve(__dirname, "..", "recommender"),
+    args: [userId],
+  };
+  await PythonShell.run("machine.py", options, async function (err, results) {
+    if (err) throw err;
+    const recomm_user = await dbCollection.findOne({
+      _id: mongoose.Types.ObjectId(results[1]),
+    });
+    let result = recomm_user.swiped_right.filter((elem) => {
+      return !current_user.swiped_right.includes(elem);
+    });
+    const dbRestCollection = await DbConnection.getCollection("Restaurants");
+    const unswiped_rest = await dbRestCollection
+      .find({ id: { $in: result } })
+      .toArray();
+    res.json(unswiped_rest);
+  });
+});
 
 //***************************************************************************************** */
 // db.mongoose
