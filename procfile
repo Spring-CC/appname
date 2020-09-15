@@ -1,1 +1,1 @@
-web: gunicorn --chdir recommender machine : app --log-file -
+web: node index.js --log-file -
