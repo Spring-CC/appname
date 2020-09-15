@@ -202,15 +202,15 @@ app.post("/Favorites", (req, res) => {
 });
 
 // Get restaurants testuser liked : recommender system ****************************************************
-app.post("/dummyfavorites/:userid", async (req, res) => {
-  const userId = req.params.userid;    
-  const dbCollection = await DbConnection.getCollection("Testdata");  
+app.get("/dummyfavorites/:userid", async (req, res) => {
+  const userId = req.params.userid;
+  const dbCollection = await DbConnection.getCollection("Testdata");
   const current_user = await dbCollection.findOne({
     _id: mongoose.Types.ObjectId(userId),
   });
 
   const options = {
-    scriptPath: path.resolve(__dirname, "..", "recommender"),  
+    scriptPath: path.resolve(__dirname, "..", "recommender"),
     args: [userId],
   };
   await PythonShell.run("machine.py", options, async function (err, results) {
@@ -226,11 +226,12 @@ app.post("/dummyfavorites/:userid", async (req, res) => {
       .find({ id: { $in: result } })
       .toArray();
     res.json(unswiped_rest);
+    console.log(unswiped_rest.length)
   });
 });
 
 
-// 
+
 
 //***************************************************************************************** */
 // db.mongoose
