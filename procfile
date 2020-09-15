@@ -1,1 +1,1 @@
-web: gunicorn recommender.machine : app --log-file -
+web: gunicorn --chdir recommender machine : app --log-file -
