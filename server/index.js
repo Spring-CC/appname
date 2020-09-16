@@ -206,17 +206,19 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
   const userId = req.params.userid;
   const dbCollection = await DbConnection.getCollection("Testdata");
   const current_user = await dbCollection.findOne({
-    _id: mongoose.Types.ObjectId(userId),
+    //userid: mongoose.Types.ObjectId(userId),
+    userid: userId,
   });
-
+  
   const options = {
     scriptPath: path.resolve(__dirname, "..", "recommender"),
-    args: [userId],
+    args: [current_user._id],
   };
   await PythonShell.run("machine.py", options, async function (err, results) {
     if (err) throw err;
     const recomm_user = await dbCollection.findOne({
-      _id: mongoose.Types.ObjectId(results[1]),
+       _id: mongoose.Types.ObjectId(results[1]),
+      
     });
     let result = recomm_user.swiped_right.filter((elem) => {
       return !current_user.swiped_right.includes(elem);
@@ -226,19 +228,19 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
       .find({ id: { $in: result } })
       .toArray();
     res.json(unswiped_rest);
-    console.log(unswiped_rest.length)
+    console.log(unswiped_rest.length);
   });
 });
-
 
 // User unliked restaurant ***************************************************************
 app.post("/swipedleft/:id", async (req, res) => {
   const userId = req.params.id;
   const restId = req.body.restId;
+
   const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
     { _id: ObjectId(userId) },
-    { $push: { swiped_left: restId } },
+    { $push: { swiped_right: restId } },
     { upsert: true },
     function (error, success) {
       if (error) {
@@ -255,10 +257,6 @@ app.post("/swipedleft/:id", async (req, res) => {
     .toArray();
   res.json(dummyuser);
 });
-
-
-
-
 
 //***************************************************************************************** */
 // db.mongoose
