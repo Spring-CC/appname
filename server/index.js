@@ -231,6 +231,33 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
 });
 
 
+// User unliked restaurant ***************************************************************
+app.post("/swipedleft/:id", async (req, res) => {
+  const userId = req.params.id;
+  const restId = req.body.restId;
+  const dbCollection = await DbConnection.getCollection("Testdata");
+  dbCollection.findOneAndUpdate(
+    { _id: ObjectId(userId) },
+    { $push: { swiped_left: restId } },
+    { upsert: true },
+    function (error, success) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(success);
+      }
+    }
+  );
+
+  //return updated dummyuser
+  const dummyuser = await dbCollection
+    .find({ _id: ObjectId(userId) })
+    .toArray();
+  res.json(dummyuser);
+});
+
+
+
 
 
 //***************************************************************************************** */
