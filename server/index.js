@@ -227,7 +227,11 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     const unswiped_rest = await dbRestCollection
       .find({ id: { $in: result } })
       .toArray();
-    res.json(unswiped_rest);
+      const sCollection = await DbConnection.getCollection("Restaurants");
+      const sRestaurants = await sCollection.find().toArray();
+      const merged = new Set([...unswiped_rest, ...sRestaurants])
+
+    res.json(merged); 
     console.log(unswiped_rest.length);
   });
 });
