@@ -209,7 +209,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     //userid: mongoose.Types.ObjectId(userId),
     userid: userId,
   });
-  
+  console.log("!!!!!", current_user)
   const options = {
     scriptPath: path.resolve(__dirname, "..", "recommender"),
     args: [current_user._id],
@@ -232,7 +232,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
   });
 });
 
-// User unliked restaurant ***************************************************************
+// Post restaurant ids user swiped left to the table **********************************************************
 app.post("/swipedleft/:id", async (req, res) => {
   const userId = req.params.id;
   const restId = req.body.restId;
