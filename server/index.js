@@ -227,18 +227,18 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     const unswiped_rest = await dbRestCollection
       .find({ id: { $in: result } })
       .toArray();
-      // console.log(unswiped_rest.length);
-      const sCollection = await DbConnection.getCollection("Restaurants");
-      const sRestaurants = await sCollection.find().toArray();
-      // console.log(sRestaurants.length)
-      let merged = unswiped_rest.concat(sRestaurants)
-      // ES6
-      merged = [...new Set([...unswiped_rest,...sRestaurants])]
-      // ES5
-    //   merged = merged.filter((item,index)=>{
-    //     return (merged.indexOf(item) == index)
-    //  })
-      // console.log(merged.length)
+    //   // console.log(unswiped_rest.length);
+    //   const sCollection = await DbConnection.getCollection("Restaurants");
+    //   const sRestaurants = await sCollection.find().toArray();
+    //   // console.log(sRestaurants.length)
+    //   let merged = unswiped_rest.concat(sRestaurants)
+    //   // ES6
+    //   merged = [...new Set([...unswiped_rest,...sRestaurants])]
+    //   // ES5
+    // //   merged = merged.filter((item,index)=>{
+    // //     return (merged.indexOf(item) == index)
+    // //  })
+    //   // console.log(merged.length)
     res.json(merged); 
   });
 });
