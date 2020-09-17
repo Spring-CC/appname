@@ -243,6 +243,65 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
   });
 });
 
+// shared route 
+
+app.post("/shared", async (req, res) => {
+  // first users ID 
+  const sUser = req.body.sharingUser;
+  const dbCollection = await DbConnection.getCollection("Testdata");
+  const sharing_User = await dbCollection.findOne({
+    //userid: mongoose.Types.ObjectId(userId),
+    userid: sUser,
+  });
+
+  // second user ID 
+  const rUser = req.body.receivingUser;
+  // const dbCollection = await DbConnection.getCollection("Testdata");
+  const receiving_User = await dbCollection.findOne({
+    //userid: mongoose.Types.ObjectId(userId),
+    userid: rUser,
+  });
+  // current_user = sharing_User + receiving_User (arrays)
+  let current_user_array = [...new Set([...sharing_User.swiped_right,...receiving_User.swiped_right])]
+
+    // making the array into an object 
+    current_user = {
+      swiped_right: current_user_array
+    }
+  
+  const options = {
+    scriptPath: path.resolve(__dirname, "..", "recommender"),
+    args: [current_user._id],
+  };
+  await PythonShell.run("machine.py", options, async function (err, results) {
+    if (err) throw err;
+    const recomm_user = await dbCollection.findOne({
+       _id: mongoose.Types.ObjectId(results[1]),
+      
+    });
+    let result = recomm_user.swiped_right.filter((elem) => {
+      return !current_user.swiped_right.includes(elem);
+    });
+    const dbRestCollection = await DbConnection.getCollection("Restaurants");
+    const unswiped_rest = await dbRestCollection
+      .find({ id: { $in: result } })
+      .toArray();
+    //   // console.log(unswiped_rest.length);
+    //   const sCollection = await DbConnection.getCollection("Restaurants");
+    //   const sRestaurants = await sCollection.find().toArray();
+    //   // console.log(sRestaurants.length)
+    //   let merged = unswiped_rest.concat(sRestaurants)
+    //   // ES6
+    //   merged = [...new Set([...unswiped_rest,...sRestaurants])]
+    //   // ES5
+    // //   merged = merged.filter((item,index)=>{
+    // //     return (merged.indexOf(item) == index)
+    // //  })
+    //   // console.log(merged.length)
+    res.json(merged); 
+  });
+});
+
 // User unliked restaurant ***************************************************************
 app.post("/swipedleft/:id", async (req, res) => {
   const userId = req.params.id;
