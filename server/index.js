@@ -126,6 +126,7 @@ app.post("/users", async (req, res) => {
     });
     //return updated list
     const users = await dbCollection.find().toArray();
+    // update the csv file 
     res.json(users);
   } catch (error) {
     res.json({message: "There was an error: " + error})
@@ -168,6 +169,7 @@ app.post("/testdata/:id", async (req, res) => {
     const dummyuser = await dbCollection
       .find({ _id: ObjectId(userId) })
       .toArray();
+      // update csv for that user 
     res.json(dummyuser);
   } catch (error) {
     res.json({message: "There was an error: " + error})
@@ -246,7 +248,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     //userid: mongoose.Types.ObjectId(userId),
     userid: userId,
   });
-  
+
   const options = {
     scriptPath: path.resolve(__dirname, "..", "recommender"),
     args: [current_user._id],
@@ -305,6 +307,8 @@ app.post("/shared", async (req, res) => {
     current_user = {
       swiped_right: current_user_array
     }
+
+    // update csv 
   
   const options = {
     scriptPath: path.resolve(__dirname, "..", "recommender"),
@@ -323,19 +327,10 @@ app.post("/shared", async (req, res) => {
     const unswiped_rest = await dbRestCollection
       .find({ id: { $in: result } })
       .toArray();
-    //   // console.log(unswiped_rest.length);
-    //   const sCollection = await DbConnection.getCollection("Restaurants");
-    //   const sRestaurants = await sCollection.find().toArray();
-    //   // console.log(sRestaurants.length)
-    //   let merged = unswiped_rest.concat(sRestaurants)
-    //   // ES6
-    //   merged = [...new Set([...unswiped_rest,...sRestaurants])]
-    //   // ES5
-    // //   merged = merged.filter((item,index)=>{
-    // //     return (merged.indexOf(item) == index)
-    // //  })
-    //   // console.log(merged.length)
-    res.json(merged); 
+
+    // remove from the csv file 
+
+    res.json(unswiped_rest); 
   });
 });
 
