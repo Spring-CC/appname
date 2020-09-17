@@ -24,6 +24,11 @@ const DbConnection = require("../dbatlas");
 const { lstat } = require("fs");
 const Favorites = mongoose.model("Favorites");
 
+// shared stuff - Shaun 
+const fs = require('fs');
+const papa = require('papaparse');
+const file = fs.createReadStream('./data/testuser.csv');
+
 const app = express();
 const mongoURI = "" + process.env.API_URL + "";
 
@@ -57,7 +62,16 @@ app.use(express.static(path.resolve(__dirname, "..", "build")));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "HIIIIIII SPRING" });
+  try {
+  //   papa.parse(file, {
+  //     complete: function(results) {
+  //         console.log("Finished:", results.data);
+  //     }
+  // });
+    res.json({ message: "HIIIIIII SPRING" });
+  } catch (error) {
+  res.json({ message: error });
+  }
 });
 
 //mongoDB routes**********************************************************************
