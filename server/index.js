@@ -341,9 +341,9 @@ app.post("/shared", async (req, res) => {
 
 // User unliked restaurant ***************************************************************
 app.post("/swipedleft/:id", async (req, res) => {
-  const userId = req.params.id;
+  try {
+    const userId = req.params.id;
   const restId = req.body.restId;
-
   const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
     { _id: ObjectId(userId) },
@@ -357,12 +357,14 @@ app.post("/swipedleft/:id", async (req, res) => {
       }
     }
   );
-
   //return updated dummyuser
   const dummyuser = await dbCollection
     .find({ _id: ObjectId(userId) })
     .toArray();
   res.json(dummyuser);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
 });
 
 //***************************************************************************************** */
