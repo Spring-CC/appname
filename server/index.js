@@ -64,85 +64,116 @@ app.get("/", (req, res) => {
 
 //get all restaurants
 app.get("/restAtlas", async (req, res) => {
-  const dbCollection = await DbConnection.getCollection("Restaurants");
-  const restaurants = await dbCollection.find().toArray();
-  res.json(restaurants);
+  try {
+    const dbCollection = await DbConnection.getCollection("Restaurants");
+    const restaurants = await dbCollection.find().toArray();
+    res.json(restaurants);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
 });
 
 //get all users
 app.get("/users", async (req, res) => {
-  const dbCollection = await DbConnection.getCollection("Users");
-  const users = await dbCollection.find().toArray();
-  res.json(users);
+  try {
+    const dbCollection = await DbConnection.getCollection("Users");
+    const users = await dbCollection.find().toArray();
+    res.json(users);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
+
 });
 
 //Get restaurants by ID
 app.get("/restAtlas/:id", async (req, res) => {
-  const restId = req.params.id;
-  const dbCollection = await DbConnection.getCollection("Restaurants");
-  const restaurant = await dbCollection.findOne({ id: restId });
-  res.json(restaurant);
+  try {
+    const restId = req.params.id;
+    const dbCollection = await DbConnection.getCollection("Restaurants");
+    const restaurant = await dbCollection.findOne({ id: restId });
+    res.json(restaurant);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
+
 });
 
 //Get restaurants by category
 app.get("/restAtlas/:category/categories", async (req, res) => {
-  const restCat = req.params.category;
-  const dbCollection = await DbConnection.getCollection("Restaurants");
-  const restaurant = await dbCollection.findOne({ category: restCat });
-  res.json(restaurant);
+  try {
+    const restCat = req.params.category;
+    const dbCollection = await DbConnection.getCollection("Restaurants");
+    const restaurant = await dbCollection.findOne({ category: restCat });
+    res.json(restaurant);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
+
 });
 
 // Post new user
 app.post("/users", async (req, res) => {
-  const newUser = req.body;
-  console.log("Adding new User", newUser);
-
-  const hashPassword = await bcrypt.hash(newUser.password, saltRounds);
-
-  const dbCollection = await DbConnection.getCollection("Users");
-  const user = await dbCollection.find().toArray();
-
-  await dbCollection.insertOne({
-    username: newUser.username,
-    password: hashPassword,
-  });
-
-  //return updated list
-  const users = await dbCollection.find().toArray();
-  res.json(users);
+  try {
+    const newUser = req.body;
+    console.log("Adding new User", newUser);
+    const hashPassword = await bcrypt.hash(newUser.password, saltRounds);
+    const dbCollection = await DbConnection.getCollection("Users");
+    // What is this const user for?
+    const user = await dbCollection.find().toArray();
+    await dbCollection.insertOne({
+      username: newUser.username,
+      password: hashPassword,
+    });
+    //return updated list
+    const users = await dbCollection.find().toArray();
+    // update the csv file 
+    res.json(users);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
 });
 
 //get testusers
 app.get("/testdata", async (req, res) => {
-  const dbCollection = await DbConnection.getCollection("Testdata");
-  const testusers = await dbCollection.find().toArray();
-  res.json(testusers);
+  try {
+    const dbCollection = await DbConnection.getCollection("Testdata");
+    const testusers = await dbCollection.find().toArray();
+    res.json(testusers);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
+
 });
 
 //Post user preference
 app.post("/testdata/:id", async (req, res) => {
-  const userId = req.params.id;
-  const restId = req.body.restId;
-  const rest = req.body.rest;
-  const dbCollection = await DbConnection.getCollection("Testdata");
-  dbCollection.findOneAndUpdate(
-    { _id: ObjectId(userId) },
-    { $push: { swiped_right: restId } },
-    { upsert: true },
-    function (error, success) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(success);
+  try {
+    const userId = req.params.id;
+    const restId = req.body.restId;
+    // What is const rest doing?
+    const rest = req.body.rest;
+    const dbCollection = await DbConnection.getCollection("Testdata");
+    dbCollection.findOneAndUpdate(
+      { _id: ObjectId(userId) },
+      { $push: { swiped_right: restId } },
+      { upsert: true },
+      function (error, success) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(success);
+        }
       }
-    }
-  );
-
-  //return updated dummyuser
-  const dummyuser = await dbCollection
-    .find({ _id: ObjectId(userId) })
-    .toArray();
-  res.json(dummyuser);
+    );
+    //return updated dummyuser
+    const dummyuser = await dbCollection
+      .find({ _id: ObjectId(userId) })
+      .toArray();
+      // update csv for that user 
+    res.json(dummyuser);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
 });
 
 //add favorite to user
@@ -157,7 +188,7 @@ app.post("/favoritesUpdate", async (req, res) => {
     );
     res.json("update it");
   } catch (err) {
-    console.log(err);
+    res.json({message: "There was an error: " + error})
   }
 });
 
@@ -173,32 +204,40 @@ app.patch("/deleteFavorite", async (req, res) => {
     );
     res.json("deleted restaurant");
   } catch (err) {
-    console.log(err);
+    res.json({message: "There was an error: " + error})
   }
 });
 
 // get favorites
 app.get("/favoritesInfo", async (req, res) => {
-  const dbCollection = await DbConnection.getCollection("favorites");
-  const favorites = await dbCollection.find().toArray();
-  res.json(favorites);
+  try {
+    const dbCollection = await DbConnection.getCollection("favorites");
+    const favorites = await dbCollection.find().toArray();
+    res.json(favorites);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
 });
 
 //Mongoose routes**********************************************************************
 app.post("/Favorites", (req, res) => {
-  const favorite = new Favorites({
-    user_Id: req.body.user_Id,
-    restaurant_Id: req.body.restaurant_Id,
-  });
-  favorite
-    .save()
-    .then((data) => {
-      console.log(data);
-      res.send("posted");
-    })
-    .catch((err) => {
-      console.log(err);
+  try {
+    const favorite = new Favorites({
+      user_Id: req.body.user_Id,
+      restaurant_Id: req.body.restaurant_Id,
     });
+    favorite
+      .save()
+      .then((data) => {
+        console.log(data);
+        res.send("posted");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
 });
 
 // Get restaurants testuser liked : recommender system ****************************************************
@@ -209,7 +248,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     //userid: mongoose.Types.ObjectId(userId),
     userid: userId,
   });
-  
+
   const options = {
     scriptPath: path.resolve(__dirname, "..", "recommender"),
     args: [current_user._id],
@@ -268,6 +307,8 @@ app.post("/shared", async (req, res) => {
     current_user = {
       swiped_right: current_user_array
     }
+
+    // update csv 
   
   const options = {
     scriptPath: path.resolve(__dirname, "..", "recommender"),
@@ -286,27 +327,18 @@ app.post("/shared", async (req, res) => {
     const unswiped_rest = await dbRestCollection
       .find({ id: { $in: result } })
       .toArray();
-    //   // console.log(unswiped_rest.length);
-    //   const sCollection = await DbConnection.getCollection("Restaurants");
-    //   const sRestaurants = await sCollection.find().toArray();
-    //   // console.log(sRestaurants.length)
-    //   let merged = unswiped_rest.concat(sRestaurants)
-    //   // ES6
-    //   merged = [...new Set([...unswiped_rest,...sRestaurants])]
-    //   // ES5
-    // //   merged = merged.filter((item,index)=>{
-    // //     return (merged.indexOf(item) == index)
-    // //  })
-    //   // console.log(merged.length)
-    res.json(merged); 
+
+    // remove from the csv file 
+
+    res.json(unswiped_rest); 
   });
 });
 
 // User unliked restaurant ***************************************************************
 app.post("/swipedleft/:id", async (req, res) => {
-  const userId = req.params.id;
+  try {
+    const userId = req.params.id;
   const restId = req.body.restId;
-
   const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
     { _id: ObjectId(userId) },
@@ -320,12 +352,14 @@ app.post("/swipedleft/:id", async (req, res) => {
       }
     }
   );
-
   //return updated dummyuser
   const dummyuser = await dbCollection
     .find({ _id: ObjectId(userId) })
     .toArray();
   res.json(dummyuser);
+  } catch (error) {
+    res.json({message: "There was an error: " + error})
+  }
 });
 
 //***************************************************************************************** */
