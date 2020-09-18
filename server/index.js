@@ -17,7 +17,7 @@ const saltRounds = 10;
 const { spawn } = require("child_process");
 const { PythonShell } = require("python-shell");
 require("../DB/Favorites");
-
+const ObjectId = require("mongoose").Types.ObjectId;
 dotenv.config();
 // const db = require("./server/db");
 const DbConnection = require("../dbatlas");
@@ -126,7 +126,7 @@ app.post("/testdata/:id", async (req, res) => {
   const rest = req.body.rest;
   const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
-    { _id: ObjectId(userId) },
+    { userid: userId },
     { $push: { swiped_right: restId } },
     { upsert: true },
     function (error, success) {
@@ -209,7 +209,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     //userid: mongoose.Types.ObjectId(userId),
     userid: userId,
   });
-  console.log("!!!!!", current_user)
+  console.log("!!!!!", current_user);
   const options = {
     scriptPath: path.resolve(__dirname, "..", "recommender"),
     args: [current_user._id],
@@ -217,8 +217,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
   await PythonShell.run("machine.py", options, async function (err, results) {
     if (err) throw err;
     const recomm_user = await dbCollection.findOne({
-       _id: mongoose.Types.ObjectId(results[1]),
-      
+      _id: mongoose.Types.ObjectId(results[1]),
     });
     let result = recomm_user.swiped_right.filter((elem) => {
       return !current_user.swiped_right.includes(elem);
@@ -227,11 +226,11 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     const unswiped_rest = await dbRestCollection
       .find({ id: { $in: result } })
       .toArray();
-      const sCollection = await DbConnection.getCollection("Restaurants");
-      const sRestaurants = await sCollection.find().toArray();
-      const merged = new Set([...unswiped_rest, ...sRestaurants])
+    // const sCollection = await DbConnection.getCollection("Restaurants");
+    // const sRestaurants = await sCollection.find().toArray();
+    // const merged = new Set([...unswiped_rest, ...sRestaurants])
 
-    res.json(merged); 
+    res.json(unswiped_rest);
     console.log(unswiped_rest.length);
   });
 });
@@ -243,8 +242,8 @@ app.post("/swipedleft/:id", async (req, res) => {
 
   const dbCollection = await DbConnection.getCollection("Testdata");
   dbCollection.findOneAndUpdate(
-    { _id: ObjectId(userId) },
-    { $push: { swiped_right: restId } },
+    { userid: userId },
+    { $push: { swiped_left: restId } },
     { upsert: true },
     function (error, success) {
       if (error) {
@@ -261,7 +260,6 @@ app.post("/swipedleft/:id", async (req, res) => {
     .toArray();
   res.json(dummyuser);
 });
-
 
 //***************************************************************************************** */
 // db.mongoose
