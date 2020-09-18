@@ -283,7 +283,6 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     if (err) throw err;
     const recomm_user = await dbCollection.findOne({
        _id: mongoose.Types.ObjectId(results[1]),
-      
     });
     let result = recomm_user.swiped_right.filter((elem) => {
       return !current_user.swiped_right.includes(elem);
@@ -303,7 +302,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     // //   merged = merged.filter((item,index)=>{
     // //     return (merged.indexOf(item) == index)
     // //  })
-    //   // console.log(merged.length)
+    //   // console.log(merged.leng\th)
     res.json(unswiped_rest); 
   });
 });
