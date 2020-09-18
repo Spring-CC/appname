@@ -24,6 +24,11 @@ const DbConnection = require("../dbatlas");
 const { lstat } = require("fs");
 const Favorites = mongoose.model("Favorites");
 
+// shared stuff - Shaun 
+const fs = require('fs');
+const papa = require('papaparse');
+const file = fs.createReadStream('./data/testuser.csv');
+
 const app = express();
 const mongoURI = "" + process.env.API_URL + "";
 
@@ -57,7 +62,28 @@ app.use(express.static(path.resolve(__dirname, "..", "build")));
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "HIIIIIII SPRING" });
+  try {
+    const newRestaurant = '"' + "Pokemon" + '"'
+    papa.parse(file, {
+      complete: function(results) {
+        // console.log(results.data[2][1]) === 1
+        for (let index = 0; index < results.data.length; index++) {
+          if (results.data[index][1] === "1") {
+            const personArray = results.data[index][2];
+            let brokenArray = personArray.split(",")
+            brokenArray.push(newRestaurant)
+            console.log(brokenArray)
+            brokenArray = brokenArray.join(',')
+            results.data[index][0] = brokenArray
+          }
+        }
+          // console.log("Finished:", results.data[2][2].split(","));
+      }
+  });
+    res.json({ message: "HIIIIIII SPRING" });
+  } catch (error) {
+  res.json({ message: error });
+  }
 });
 
 //mongoDB routes**********************************************************************
@@ -278,7 +304,7 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     // //     return (merged.indexOf(item) == index)
     // //  })
     //   // console.log(merged.length)
-    res.json(merged); 
+    res.json(unswiped_rest); 
   });
 });
 
