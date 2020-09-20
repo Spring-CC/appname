@@ -173,12 +173,10 @@ app.post("/testdata/:id", async (req, res) => {
   try {
     const userId = req.params.id;
     const restId = req.body.restId;
-    // What is const rest doing?
-    const rest = req.body.rest;
     const dbCollection = await DbConnection.getCollection("Testdata");
     dbCollection.findOneAndUpdate(
-      { _id: ObjectId(userId) },
-      { $push: { swiped_right: restId } },
+      { userid: userId },
+      { $addToSet: { swiped_right: restId } },
       { upsert: true },
       function (error, success) {
         if (error) {
@@ -288,38 +286,17 @@ app.get("/dummyfavorites/:userid", async (req, res) => {
     const unswiped_rest = await dbRestCollection
       .find({ id: { $in: result } })
       .toArray();
-    //   // console.log(unswiped_rest.length);
-    //   const sCollection = await DbConnection.getCollection("Restaurants");
-    //   const sRestaurants = await sCollection.find().toArray();
-    //   // console.log(sRestaurants.length)
-    //   let merged = unswiped_rest.concat(sRestaurants)
-    //   // ES6
-    //   merged = [...new Set([...unswiped_rest,...sRestaurants])]
-    //   // ES5
-    // //   merged = merged.filter((item,index)=>{
-    // //     return (merged.indexOf(item) == index)
-    // //  })
-    //   // console.log(merged.length)
     res.json(unswiped_rest);
   });
 });
 
-// shared route
-
+// shared route ***************************************************************************************
 app.post("/shared", async (req, res) => {
   // first users ID
   const sUser = req.body.sharingUser;
   const dbCollection = await DbConnection.getCollection("Testdata");
-  const userId = req.params.userid;
-  //** */
-  const current_user = await dbCollection.findOne({
-    //userid: mongoose.Types.ObjectId(userId),
-    userid: userId,
-  });
 
-  //**
   const sharing_User = await dbCollection.findOne({
-    //userid: mongoose.Types.ObjectId(userId),
     userid: sUser,
   });
 
@@ -335,12 +312,8 @@ app.post("/shared", async (req, res) => {
     ...new Set([...sharing_User.swiped_right, ...receiving_User.swiped_right]),
   ];
   console.log("check!!!!!", current_user_array);
-  // // making the array into an object
-  // current_user = {
-  //   swiped_right: current_user_array
-  // }
 
-  //******append new data in csv file ************
+  //append new data in csv file
   const newLine = "\r\n";
   const fields = ["_id", "userid", "swiped_right"];
 
@@ -361,23 +334,13 @@ app.post("/shared", async (req, res) => {
   fs.stat("./data/testdata2.csv", function (err, stat) {
     console.log(err);
     if (err == null) {
-      console.log("hello!!!!!");
       console.log("File exsist!!");
 
       let csv = parse(appendThis, toCsv);
-      console.log("csv!!!!!", csv);
-
       fs.appendFile("./data/testdata2.csv", csv, function (err) {
         if (err) throw err;
         console.log('The "data to append" was appended to file!');
       });
-    } else {
-      // console.log('New file, just writing hearders');
-      // fields = (fields + newLine);
-      // fs.writeFile('/data/testdata2.csv', fields, function(err){
-      //   if(err) throw err;
-      //   console.log('file saved');
-      // })
     }
   });
 
@@ -417,6 +380,29 @@ app.post("/shared", async (req, res) => {
   });
 });
 
+// Updata CSV file when a user login / signup *****************************************************************
+app.post("/updatecsv", async (req, res) => {
+  const dbCollection = await DbConnection.getCollection("Testdata");
+  const current_user = await dbCollection
+    .find({}, { swiped_left: 0 })
+    .toArray();
+  res.json(current_user);
+
+  const fields = ["_id", "userid", "swiped_right"];
+
+  const toCsv = {
+    fields: fields,
+    header: true,
+  };
+  let csv = parse(current_user, toCsv) + "\n";
+
+  fs.writeFile("./data/testdata2.csv", csv, function (err) {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("CSV file updated!!");
+  });
+});
 // Post restaurant ids user swiped left to the table **********************************************************
 app.post("/swipedleft/:id", async (req, res) => {
   try {
