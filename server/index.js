@@ -107,7 +107,7 @@ app.get("/restAtlas", async (req, res) => {
   }
 });
 
-//get all users
+//get all users, Auth0 users right?
 app.get("/users", async (req, res) => {
   try {
     const dbCollection = await DbConnection.getCollection("Users");
@@ -130,7 +130,7 @@ app.get("/restAtlas/:id", async (req, res) => {
   }
 });
 
-//Get restaurants by category
+//Get restaurants by category or prefrences? 
 app.get("/restAtlas/:category/categories", async (req, res) => {
   try {
     const restCat = req.params.category;
@@ -142,7 +142,7 @@ app.get("/restAtlas/:category/categories", async (req, res) => {
   }
 });
 
-// Post new user
+// Post new user to 'user' database
 app.post("/users", async (req, res) => {
   try {
     const newUser = req.body;
@@ -164,7 +164,7 @@ app.post("/users", async (req, res) => {
   }
 });
 
-//get testusers
+//get testusers <-- what?
 app.get("/testdata", async (req, res) => {
   try {
     const dbCollection = await DbConnection.getCollection("Testdata");
@@ -175,7 +175,7 @@ app.get("/testdata", async (req, res) => {
   }
 });
 
-//Post user preference
+//Post user preference <-- is that what this is doing? whys it called testdata? Is there where the reccommder should be saving users?
 app.post("/testdata/:id", async (req, res) => {
   try {
     const userId = req.params.id;
@@ -220,7 +220,7 @@ app.post("/favoritesUpdate", async (req, res) => {
   }
 });
 
-//delete favorite in user
+//delete favorite in user <-- should be app.delete then?
 app.patch("/deleteFavorite", async (req, res) => {
   try {
     const user = req.body.user_Id;
@@ -248,6 +248,7 @@ app.get("/favoritesInfo", async (req, res) => {
 });
 
 //Mongoose routes**********************************************************************
+// what does this route do ? 
 app.post("/Favorites", (req, res) => {
   try {
     const favorite = new Favorites({
@@ -269,6 +270,7 @@ app.post("/Favorites", (req, res) => {
 });
 
 // Get restaurants testuser liked : recommender system ****************************************************
+// the name is not good
 app.get("/dummyfavorites/:userid", async (req, res) => {
   const userId = req.params.userid;
   const dbCollection = await DbConnection.getCollection("Testdata");
@@ -506,6 +508,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(router);
 
+// what is this ?
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "..", "build", "index.html"));
 });
