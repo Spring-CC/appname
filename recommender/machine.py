@@ -10,7 +10,7 @@ import sys
 
 # sparse matrix
 swipeddata_df = pd.read_csv(
-    'data/testuser.csv', usecols=[0, 1, 2], index_col=1)
+    'data/testdata2.csv', usecols=[0, 1, 2], index_col=1)
 swipeddata_df.swiped_right = swipeddata_df.swiped_right.apply(literal_eval)
 new_df = swipeddata_df.explode("swiped_right")
 
