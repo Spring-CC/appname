@@ -63,18 +63,25 @@ app.use(express.static(path.resolve(__dirname, "..", "build")));
 // simple route
 app.get("/", (req, res) => {
   try {
-    const newRestaurant = '"' + "Pokemon" + '"'
+    const newRestaurant = '"' + "Pokemon" + '"]'
+    // reading file 
     papa.parse(file, {
+      // updating array 
       complete: function(results) {
-        // console.log(results.data[2][1]) === 1
         for (let index = 0; index < results.data.length; index++) {
           if (results.data[index][1] === "1") {
             const personArray = results.data[index][2];
             let brokenArray = personArray.split(",")
+            let string = brokenArray[brokenArray.length-1]
+            let array = string.split('')
+            array.pop()
+            array = array.join('')
+            brokenArray[brokenArray.length-1] = array
             brokenArray.push(newRestaurant)
-            console.log(brokenArray)
             brokenArray = brokenArray.join(',')
-            results.data[index][0] = brokenArray
+            results.data[index][0] = '"' + brokenArray + '"'
+            console.log(results.data[index][0])
+            // write to file 
           }
         }
           // console.log("Finished:", results.data[2][2].split(","));
