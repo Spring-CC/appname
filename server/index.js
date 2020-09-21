@@ -171,11 +171,12 @@ app.post("/favorites/user/:id", (req, res) => {
 
 // Get restaurants testuser liked : recommender system ****************************************************
 // the name is not good
-app.get("/recommender/:id", async (req, res) => {
+app.get("/recommender/:id", async (req, res) => { // use "userid"
   try {
     const userId = req.params.id;
     const dbCollection = await DbConnection.getCollection("Testdata");
     const current_user = await dbCollection.findOne({userid: userId,});
+    console.log(current_user)
     const options = {
       scriptPath: path.resolve(__dirname, "..", "recommender"),
       args: [current_user._id],
@@ -185,6 +186,7 @@ app.get("/recommender/:id", async (req, res) => {
       const recomm_user = await dbCollection.findOne({
         _id: mongoose.Types.ObjectId(results[1]),
       });
+      console.log(recomm_user)
       let result = recomm_user.swiped_right.filter((elem) => {
         return !current_user.swiped_right.includes(elem);
       });
@@ -212,7 +214,7 @@ app.get("/recommender/users", async (req, res) => {
 });
 
 //Post restaurant ID to testdata database, for recommender
-app.post("/recommender/:id", async (req, res) => {
+app.post("/recommender/:id", async (req, res) => {   // use "userid"
   try {
     const userId = req.params.id;
     const restId = req.body.restId;
