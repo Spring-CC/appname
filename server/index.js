@@ -113,7 +113,7 @@ app.get("/restaurants/:category/categories", async (req, res) => {
 app.post("/favorites/:rest_id", async (req, res) => {
   try {
     const user = req.body.user_Id;
-    const restaurant = req.params.res_id;
+    const restaurant = req.params.rest_id;
     const dbCollection = await DbConnection.getCollection("favorites");
     await dbCollection.findOneAndUpdate(
       { user_Id: user },
