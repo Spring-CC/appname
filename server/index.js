@@ -176,7 +176,7 @@ app.get("/recommender/:id", async (req, res) => {
   const dbCollection = await DbConnection.getCollection("Testdata");
   const current_user = await dbCollection.findOne({
     //userid: mongoose.Types.ObjectId(userId),
-    id: userId,
+    userid: userId,
   });
 
   const options = {
