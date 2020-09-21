@@ -202,7 +202,7 @@ app.post("/Favorites", (req, res) => {
 });
 
 // Get restaurants testuser liked : recommender system ****************************************************
-app.post("/dummyfavorites/:userid", async (req, res) => {
+app.get("/dummyfavorites/:userid", async (req, res) => {
   const userId = req.params.userid;
   const dbCollection = await DbConnection.getCollection("Testdata");
   const current_user = await dbCollection.findOne({
