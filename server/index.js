@@ -188,7 +188,7 @@ app.post("/testdata/:id", async (req, res) => {
     );
     //return updated dummyuser
     const dummyuser = await dbCollection
-      .find({ _id: ObjectId(userId) })
+      .find({ userid: userId })
       .toArray();
     // update csv for that user
     res.json(dummyuser);
