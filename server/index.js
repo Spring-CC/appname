@@ -110,9 +110,9 @@ app.get("/restaurants/:category/categories", async (req, res) => {
 });
 //*************Favorites system **********************************************************************/
 //add favorite to user (rename?)
-app.post("/favorites/:id", async (req, res) => {
+app.post("/favorites/:res_id", async (req, res) => {
   try {
-    const user = req.params.id;
+    const user = req.params.res_id;
     const restaurant = req.body.restaurant_Id;
     const dbCollection = await DbConnection.getCollection("favorites");
     await dbCollection.findOneAndUpdate(
