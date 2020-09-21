@@ -126,9 +126,9 @@ app.post("/favorites/:rest_id", async (req, res) => {
 });
 
 //delete favorite in user <-- should be app.delete then?
-app.delete("/favorites/:rest_id", async (req, res) => {
+app.delete("/favorites/:userId/:rest_id", async (req, res) => {
   try {
-    const user = req.body.user_Id;
+    const user = req.params.userId;
     const restaurant = req.params.rest_id;
     const dbCollection = await DbConnection.getCollection("favorites");
     await dbCollection.updateOne(
