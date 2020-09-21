@@ -192,6 +192,7 @@ app.get("/recommender/:id", async (req, res) => {
       const unswiped_rest = await dbRestCollection
         .find({ id: { $in: result } })
         .toArray();
+        // const unswiped_rest = [];
       res.json(unswiped_rest);
     });  
   } catch (error) {
@@ -243,11 +244,9 @@ app.post("/shared", async (req, res) => {
   // first users ID
   const sUser = req.body.sharingUser;
   const dbCollection = await DbConnection.getCollection("Testdata");
-
   const sharing_User = await dbCollection.findOne({
     userid: sUser,
   });
-
   // second user ID
   const rUser = req.body.receivingUser;
   // const dbCollection = await DbConnection.getCollection("Testdata");
@@ -259,10 +258,8 @@ app.post("/shared", async (req, res) => {
   let current_user_array = [
     ...new Set([...sharing_User.swiped_right, ...receiving_User.swiped_right]),
   ];
-  console.log("check!!!!!", current_user_array);
 
   //append new data in csv file
-  const newLine = "\r\n";
   const fields = ["_id", "userid", "swiped_right"];
 
   const appendThis = [
@@ -280,14 +277,10 @@ app.post("/shared", async (req, res) => {
   };
 
   fs.stat("./data/testdata2.csv", function (error, stat) {
-    console.log(error);
-    if (error == null) {
-      console.log("File exsist!!");
-
+    if (error) { console.log(error) } else {
       let csv = parse(appendThis, toCsv);
       fs.appendFile("./data/testdata2.csv", csv, function (error) {
-        if (error) throw error;
-        console.log('The "data to append" was appended to file!');
+        if (error) {console.log(error)}
       });
     }
   });
@@ -301,7 +294,6 @@ app.post("/shared", async (req, res) => {
     const recomm_user = await dbCollection.findOne({
       _id: mongoose.Types.ObjectId(results[4]),
     });
-    console.log(recomm_user);
     let result = recomm_user.swiped_right.filter((elem) => {
       return !appendThis[0].swiped_right.includes(elem);
     });
@@ -318,12 +310,10 @@ app.post("/shared", async (req, res) => {
       theFile[theFile.length - 1] = "";
       fs.writeFile(filename, theFile.join("\n"), function (error) {
         if (error) {
-          return console.log(error);
+          console.log(error);
         }
-        console.log("Removed last one line");
       });
     });
-
     res.json(unswiped_rest);
   });
 });
