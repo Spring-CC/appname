@@ -70,7 +70,7 @@ app.get("/restaurants", async (req, res) => {
     const restaurants = await dbCollection.find().toArray();
     res.json(restaurants);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
@@ -81,7 +81,7 @@ app.get("/users", async (req, res) => {
     const users = await dbCollection.find().toArray();
     res.json(users);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
@@ -93,7 +93,7 @@ app.get("/restaurants/:id", async (req, res) => {
     const restaurant = await dbCollection.findOne({ id: restId });
     res.json(restaurant);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
@@ -105,7 +105,7 @@ app.get("/restaurants/:category/categories", async (req, res) => {
     const restaurant = await dbCollection.findOne({ category: restCat });
     res.json(restaurant);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 //*************Favorites system **********************************************************************/
@@ -121,7 +121,7 @@ app.post("/favorites/:rest_id", async (req, res) => {
     );
     res.json("update it");
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
@@ -137,7 +137,7 @@ app.delete("/favorites/:rest_id", async (req, res) => {
     );
     res.json("Deleted restaurant");
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
@@ -148,7 +148,7 @@ app.get("/favorites", async (req, res) => {
     const favorites = await dbCollection.find().toArray();
     res.json(favorites);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
@@ -165,7 +165,7 @@ app.post("/favorites/user/:id", (req, res) => {
       res.send("posted");
     })
     .catch((error) => {
-      res.json({ message: "There was an error: " + error });
+      console.log(error)
     });
 });
 
@@ -206,7 +206,7 @@ app.get("/recommender/users", async (req, res) => {
     const testUsers = await dbCollection.find().toArray();
     res.json(testUsers);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
@@ -235,7 +235,7 @@ app.post("/recommender/:id", async (req, res) => {
     // update csv for that user
     res.json(dummyuser);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 // shared route ***************************************************************************************
@@ -363,7 +363,7 @@ app.post("/swipedleft/:id", async (req, res) => {
       { upsert: true },
       function (error, success) {
         if (error) {
-          res.json({ message: "There was an error: " + error });
+          console.log(error)
         } else {
           res.json({ message: "There was successful", success: success });
         }
@@ -375,7 +375,7 @@ app.post("/swipedleft/:id", async (req, res) => {
       .toArray();
     res.json(dummyuser);
   } catch (error) {
-    res.json({ message: "There was an error: " + error });
+    console.log(error)
   }
 });
 
