@@ -241,7 +241,8 @@ app.post("/recommender/:id", async (req, res) => {
 });
 // shared route ***************************************************************************************
 app.post("/shared", async (req, res) => {
-  // first users ID
+  try {
+      // first users ID
   const sUser = req.body.sharingUser;
   const dbCollection = await DbConnection.getCollection("Testdata");
   const sharing_User = await dbCollection.findOne({
@@ -316,6 +317,9 @@ app.post("/shared", async (req, res) => {
     });
     res.json(unswiped_rest);
   });
+  } catch (error) {
+    console.log(error)
+  }
 });
 
 // Updata CSV file when a user login / signup *****************************************************************
