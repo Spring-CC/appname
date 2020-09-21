@@ -172,31 +172,31 @@ app.post("/favorites/user/:id", (req, res) => {
 // Get restaurants testuser liked : recommender system ****************************************************
 // the name is not good
 app.get("/recommender/:id", async (req, res) => {
-  const userId = req.params.id;
-  const dbCollection = await DbConnection.getCollection("Testdata");
-  const current_user = await dbCollection.findOne({
-    //userid: mongoose.Types.ObjectId(userId),
-    userid: userId,
-  });
-
-  const options = {
-    scriptPath: path.resolve(__dirname, "..", "recommender"),
-    args: [current_user._id],
-  };
-  await PythonShell.run("machine.py", options, async function (error, results) {
-    if (error) throw error;
-    const recomm_user = await dbCollection.findOne({
-      _id: mongoose.Types.ObjectId(results[1]),
-    });
-    let result = recomm_user.swiped_right.filter((elem) => {
-      return !current_user.swiped_right.includes(elem);
-    });
-    const dbRestCollection = await DbConnection.getCollection("Restaurants");
-    const unswiped_rest = await dbRestCollection
-      .find({ id: { $in: result } })
-      .toArray();
-    res.json(unswiped_rest);
-  });
+  try {
+    const userId = req.params.id;
+    const dbCollection = await DbConnection.getCollection("Testdata");
+    const current_user = await dbCollection.findOne({userid: userId,});
+    const options = {
+      scriptPath: path.resolve(__dirname, "..", "recommender"),
+      args: [current_user._id],
+    };
+    await PythonShell.run("machine.py", options, async function (error, results) {
+      if (error) throw error;
+      const recomm_user = await dbCollection.findOne({
+        _id: mongoose.Types.ObjectId(results[1]),
+      });
+      let result = recomm_user.swiped_right.filter((elem) => {
+        return !current_user.swiped_right.includes(elem);
+      });
+      const dbRestCollection = await DbConnection.getCollection("Restaurants");
+      const unswiped_rest = await dbRestCollection
+        .find({ id: { $in: result } })
+        .toArray();
+      res.json(unswiped_rest);
+    });  
+  } catch (error) {
+    console.log(error)
+  }
 });
 
 //get recommender users
