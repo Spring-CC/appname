@@ -38,9 +38,13 @@ distances, indices = knn_recomm.kneighbors(
 
 
 def find_similaruser(user):
-    distances, indices = knn_recomm.kneighbors(
-        user_pivot.loc[user].values.reshape(1,-1), n_neighbors=9
-    )
+    print("user", user)
+    try : 
+        distances, indices = knn_recomm.kneighbors(
+            user_pivot.loc[user].values.reshape(1,-1), n_neighbors=9
+        )
+    except KeyError as e:
+        print(e)
     for i in range(0, len(distances.flatten())):
         #if i == 0:
             #print('Recommendations for user:', user)
