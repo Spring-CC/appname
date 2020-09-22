@@ -747,25 +747,36 @@ app.post("/recommender/:id", async (req, res) => {   // use "userid"
   try {
     const userId = req.params.id;
     const restId = req.body.restId;
-    const dbCollection = await DbConnection.getCollection("Testdata");
-    dbCollection.findOneAndUpdate(
-      { userid: userId },
-      { $addToSet: { swiped_right: restId } },
-      { upsert: true },
-      function (error, success) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(success);
+    if(restId!==null){
+      const dbCollection = await DbConnection.getCollection("Testdata");
+      dbCollection.findOneAndUpdate(
+        { userid: userId },
+        { $addToSet: { swiped_right: restId } },
+        { upsert: true },
+        function (error, success) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(success);
+          }
         }
-      }
-    );
-    //return updated dummyuser
-    const dummyuser = await dbCollection
+      );
+      //return updated dummyuser
+      const dummyuser = await dbCollection
+        .find({ _id: ObjectId(userId) })
+        .toArray();
+      // update csv for that user
+      res.json(dummyuser);
+    } else {
+      console.log("There was a null");
+      const dbCollection = await DbConnection.getCollection("Testdata");
+      const dummyuser = await dbCollection
       .find({ _id: ObjectId(userId) })
       .toArray();
     // update csv for that user
     res.json(dummyuser);
+    }
+
   } catch (error) {
     console.log(error)
   }
