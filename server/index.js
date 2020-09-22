@@ -204,7 +204,7 @@ app.get("/recommender/:id", async (req, res) => {
 //   } catch (error) {
 //     console.log(error)
 //   }
-// });
+});
 
 //get recommender users
 app.get("/recommender/users", async (req, res) => {
