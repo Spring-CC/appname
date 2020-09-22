@@ -1461,7 +1461,13 @@ app.post("/updatecsv", async (req, res) => {
     .find({}, { swiped_left: 0 })
     .toArray();
   res.json(current_user);
-
+  current_user.forEach(elem=>{
+    for(let i = 0; i < elem.swiped_right.length;i++){
+      if(elem.swiped_right[i]===null){
+        elem.swiped_right.splice(i, 1)
+      }
+    }
+  })
   const fields = ["_id", "userid", "swiped_right"];
 
   const toCsv = {
