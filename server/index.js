@@ -171,35 +171,40 @@ app.post("/favorites/user/:id", (req, res) => {
 
 // Get restaurants testuser liked : recommender system ****************************************************
 // the name is not good
+
 app.get("/recommender/:id", async (req, res) => {
-  // try {
-  //   const userId = req.params.id;
-  //   const dbCollection = await DbConnection.getCollection("Testdata");
-  //   const current_user = await dbCollection.findOne({userid: userId,});
-  //   const options = {
-  //     scriptPath: path.resolve(__dirname, "..", "recommender"),
-  //     args: [current_user._id],
-  //   };
-  //   await PythonShell.run("machine.py", options, async function (error, results) {
-  //     if (error) throw error;
-  //     const recomm_user = await dbCollection.findOne({
-  //       _id: mongoose.Types.ObjectId(results[1]),
-  //     });
-  //     let result = recomm_user.swiped_right.filter((elem) => {
-  //       return !current_user.swiped_right.includes(elem);
-  //     });
-  //     const dbRestCollection = await DbConnection.getCollection("Restaurants");
-  //     const unswiped_rest = await dbRestCollection
-  //       .find({ id: { $in: result } })
-  //       .toArray();
-  //       // const unswiped_rest = [];
-  //     res.json(unswiped_rest);
-  //   });  
-  // } catch (error) {
-  //   console.log(error)
-  // }
   res.json(["g008249","g600156","gdwe301","gab1400","gatj212","g661400","6272655","a616599","6277861","ga5n905","ggsz700","gdkx700","7262655","gd63300","gacb209","g005301","gghw900","g441105","gc5u602","gf4a900","a127670","g685302","g008235","a188908","6460824","gd5n100","gefr202","g111304","g278000","e628402","5252459","7500211","gf6d300","e295813","6390635","g084651","g600188","gf1h200","b963607","p701503","g887404","6183474","gamh200","6390667","geez505","g600165","g600108","7362957","ggxm500","g486510","g783903","g939319","gacb242","g097925","e991603","a482827","gek1100","gdmy707","gas2101","ge2b701","6390637","gf2t939","7734533","5153762","a527200","gdtp006","gdh4400","6710182","6390645","e093000","gg1x500","gfek607","ggxr200","gfkt100","gey4501","a616569","gddc701","p663200","7660648","6184808"]);
-});
+
+// app.get("/recommender/:id", async (req, res) => { // use "userid"
+//   try {
+//     const userId = req.params.id;
+//     const dbCollection = await DbConnection.getCollection("Testdata");
+//     const current_user = await dbCollection.findOne({userid: userId,});
+//     console.log(current_user)
+//     const options = {
+//       scriptPath: path.resolve(__dirname, "..", "recommender"),
+//       args: [current_user._id],
+//     };
+//     await PythonShell.run("machine.py", options, async function (error, results) {
+//       if (error) throw error;
+//       const recomm_user = await dbCollection.findOne({
+//         _id: mongoose.Types.ObjectId(results[1]),
+//       });
+//       console.log(recomm_user)
+//       let result = recomm_user.swiped_right.filter((elem) => {
+//         return !current_user.swiped_right.includes(elem);
+//       });
+//       const dbRestCollection = await DbConnection.getCollection("Restaurants");
+//       const unswiped_rest = await dbRestCollection
+//         .find({ id: { $in: result } })
+//         .toArray();
+//         // const unswiped_rest = [];
+//       res.json(unswiped_rest);
+//     });  
+//   } catch (error) {
+//     console.log(error)
+//   }
+// });
 
 //get recommender users
 app.get("/recommender/users", async (req, res) => {
@@ -213,7 +218,7 @@ app.get("/recommender/users", async (req, res) => {
 });
 
 //Post restaurant ID to testdata database, for recommender
-app.post("/recommender/:id", async (req, res) => {
+app.post("/recommender/:id", async (req, res) => {   // use "userid"
   try {
     const userId = req.params.id;
     const restId = req.body.restId;
